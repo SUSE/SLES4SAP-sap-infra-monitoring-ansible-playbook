@@ -1,6 +1,7 @@
-# Infrastructure-monitoring-for-SAP-Systems-ansible-playbook
+# SLES4SAP-sap-infra-monitoring-ansible-playbook
 
- This ansible playbook is deploying most of the monitoring solutions discussed in the Best Practice Monitoring Paper.
+ This ansible playbook is deploying most of the monitoring solutions discussed in the Best Practice Paper:<br>
+ [Infrastructure monitoring for SAP Systems](https://documentation.suse.com/sbp/sap-15/html/SBP-SLES4SAP-sap-infra-monitoring/index.html).
  
  
  ## Components:
@@ -20,9 +21,9 @@
 
 ## Customizable Settings:
 The deployment should be adaptable to an existing infrastructure. Therefore different settings are configurable via default variables.<br> 
-These variables are stored under [/roles/configuration/vars/default.yaml ](roles/configuration/vars/default.yaml).
+These variables are stored under [/roles/configuration/vars/default.yaml](roles/configuration/vars/default.yaml).
 
-The following main settings are possible:
+The following settings are possible:
 
 ### Port Numbers:
 Changing them will automatically change it to all depending components. 
