@@ -1,0 +1,28 @@
+---
+
+
+# Server Hosts
+# ----------------------------------------
+grafana-server:
+  hosts:
+    grafana.example.com:
+
+prometheus-server:
+  hosts:
+    prometheus.example.com:
+
+prometheus-alertmanager:
+  hosts:
+    alertmanager.example.com:
+
+loki-server:
+  hosts:
+    loki.example.com:   
+
+
+# Systems to be monitored
+# ----------------------------------------
+monitoring-agents:
+  hosts:
+    agent.example.com:
+  

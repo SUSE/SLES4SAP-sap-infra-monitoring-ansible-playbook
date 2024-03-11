@@ -1,0 +1,28 @@
+---
+
+- name: Additional facts
+  ansible.builtin.include_tasks:
+    ../../configuration/tasks/gathering-facts.yaml
+
+- name: Default vars
+  ansible.builtin.include_vars:
+    ../../configuration/vars/default.yaml
+
+
+- name: Prometheus node exporter
+  ansible.builtin.include_tasks:
+    ./prometheus-node_exporter.yaml
+
+- name: Promtail
+  ansible.builtin.include_tasks:
+    ./promtail.yaml
+
+- name: Collectd
+  ansible.builtin.include_tasks:
+    ./collectd.yaml    
+
+
+
+
+
+

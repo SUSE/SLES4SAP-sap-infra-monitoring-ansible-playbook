@@ -1,0 +1,58 @@
+auth_enabled: false
+server:
+  http_listen_port: {{loki_port}}
+
+ingester:
+  lifecycler:
+    address: 127.0.0.1
+    ring:
+      kvstore:
+        store: inmemory
+      replication_factor: 1
+    final_sleep: 0s
+  chunk_idle_period: 5m
+  chunk_retain_period: 30s
+  wal:
+    dir: /var/lib/loki/wal
+
+schema_config:
+  configs:
+  - from: 2024-01-23
+    store: boltdb
+    object_store: filesystem
+    schema: v11
+    index:
+      prefix: index_
+      period: 168h
+
+storage_config:
+  boltdb:
+    directory: /var/lib/loki/index
+  filesystem:
+    directory: /var/lib/loki/chunks
+
+limits_config:
+  enforce_metric_name: false
+  reject_old_samples: true
+  reject_old_samples_max_age: 168h
+
+ruler:
+  storage:
+    type: local
+    local:
+      # On a non-multi-tenant system (see auth_enabled: false)
+      # the (user)ID is "fake" and all rules have to store under the subfolder ../fake/.
+      # Given the directory parameter below the rules files have to store under /etc/loki/rules/fake/
+      directory: /etc/loki/rules
+  rule_path: /var/lib/loki/scratch
+  alertmanager_url: http://{% for host in groups['prometheus-alertmanager'] -%}{{ host }}{% endfor %}:{{prometheus_alertmanager_port}}
+  # Time to wait before resend an alert to alertmanager
+  # resend_delay: 12h
+  enable_alertmanager_v2: true
+  ring:
+    kvstore:
+      store: inmemory
+  enable_api: true
+    
+
+

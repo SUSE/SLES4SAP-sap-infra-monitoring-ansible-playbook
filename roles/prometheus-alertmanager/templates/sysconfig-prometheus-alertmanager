@@ -1,0 +1,10 @@
+## Path:
+## Description: Prometheus alertmanager server settings
+## Type:        string
+## Default:     ""
+## ServiceRestart: prometheus-alertmanager
+#
+# Command line options for prometheus-alertmanager
+#
+
+ARGS="{% for args in prometheus_alertmanager_args %}--{{ args }} {% endfor %}"

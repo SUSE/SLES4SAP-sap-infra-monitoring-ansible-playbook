@@ -1,0 +1,12 @@
+
+#- name: Collect package facts
+#  package_facts:
+#    manager: auto
+
+- name: Collect package facts
+  ansible.builtin.package_facts:
+  changed_when: false
+
+
+- name: Collect service facts
+  ansible.builtin.service_facts:

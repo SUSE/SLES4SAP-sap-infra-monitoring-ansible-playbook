@@ -1,0 +1,32 @@
+---
+
+- name: Grafana server deployment
+  hosts:
+    - grafana-server
+  roles:
+    - grafana-server
+
+- name: Prometheus server deployment
+  hosts:
+    - prometheus-server
+  roles:
+    - prometheus-server
+
+- name: Prometheus alertmanager deployment
+  hosts:
+    - prometheus-alertmanager
+  roles:
+    - prometheus-alertmanager
+
+- name: Loki server deployment
+  hosts:
+    - loki-server
+  roles:
+    - loki-server    
+
+
+- name: monitoring agent deployment
+  hosts:
+    - monitoring-agents
+  roles:
+    - agents

@@ -1,0 +1,11 @@
+#jinja2:variable_start_string:'[%', variable_end_string:'%]', trim_blocks: False
+ groups:
+ - name: prometheus-exporter
+   rules:
+     - alert: exporter-down
+       expr: up{job=~".+"} == 0
+       for: 1m
+       labels:
+       annotations:
+         title: Exporter {{ $labels.instance }} is down
+         description: Failed to scrape {{ $labels.job }} on {{ $labels.instance }} for more than 1 minutes. Exporter seams down.     

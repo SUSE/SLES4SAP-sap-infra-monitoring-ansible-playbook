@@ -1,0 +1,34 @@
+---
+
+- name: Permit traffic for  node-exporter port
+  ansible.posix.firewalld:
+    port: "{{node_exporter_port}}/tcp"
+    permanent: true
+    state: enabled
+    immediate: true
+  when:
+    - "'firewalld' in ansible_facts.packages"
+    - ansible_facts.services["firewalld.service"].state == "running"
+
+- name: Install prometheus-node_exporter
+  community.general.zypper:
+    name: golang-github-prometheus-node_exporter
+    state: latest
+
+- name: Create prometheus-node_exporter sysconfig file
+  ansible.builtin.template:
+    src: sysconfig-prometheus-node_exporter
+    dest: /etc/sysconfig/prometheus-node_exporter
+    mode: "0644"
+  register: prometheus_node_exporter_sysconfig_conf  
+
+- name: Restart prometheus-node_exporter
+  ansible.builtin.service:
+    name: prometheus-node_exporter.service
+    enabled: true
+    state: restarted
+  when:
+    - prometheus_node_exporter_sysconfig_conf.changed or
+      ansible_facts.services["prometheus-node_exporter.service"].state != "running"  
+
+

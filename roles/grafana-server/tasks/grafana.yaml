@@ -1,0 +1,44 @@
+---
+
+- name: Permit traffic in default zone for grafana port
+  ansible.posix.firewalld:
+    port: "{{ grafana_http_port }}/tcp"
+    permanent: true
+    state: enabled
+    immediate: true
+  when:
+    - "'firewalld' in ansible_facts.packages"
+    - ansible_facts.services["firewalld.service"].state == "running"
+
+- name: Install grafana
+  community.general.zypper:
+    name: grafana
+    state: latest
+
+- name: Set URL port
+  replace:
+    path: /etc/grafana/grafana.ini
+    regexp: '.*http_port\ .*'
+    replace: "http_port = {{ grafana_http_port }}"
+    backup: yes
+  register: grafana_port_conf
+
+- name: Restart grafana
+  ansible.builtin.service:
+    name: grafana-server.service
+    enabled: true
+    state: restarted
+  when:
+    - grafana_port_conf.changed or
+      ansible_facts.services["grafana-server.service"].state != "running"  
+
+
+# This task is an example on how to change the default password.
+# It will change it only if the default one (admin) is valid.
+- name: Change Password
+  shell: "grafana-cli admin reset-admin-password {{grafana_admin_password}}"
+  register: __command_admin
+  changed_when: __command_admin.rc !=0 
+
+
+

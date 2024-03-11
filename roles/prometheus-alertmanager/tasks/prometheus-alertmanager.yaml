@@ -1,0 +1,41 @@
+---
+
+- name: Permit traffic for alermanager port
+  ansible.posix.firewalld:
+    port: "{{prometheus_alertmanager_port}}/tcp"
+    permanent: true
+    state: enabled
+    immediate: true
+  when:
+    - "'firewalld' in ansible_facts.packages"
+    - ansible_facts.services["firewalld.service"].state == "running"
+
+- name: Install prometheus-alertmanager
+  community.general.zypper:
+    name: golang-github-prometheus-alertmanager
+    state: latest
+
+
+- name: Create alertmanager.yml
+  ansible.builtin.template:
+    src: alertmanager.yml
+    dest: /etc/prometheus/alertmanager.yml
+    mode: "0644"
+  register: alertmanager_conf  
+
+- name: Create prometheus alertmanager sysconfig file
+  ansible.builtin.template:
+    src: sysconfig-prometheus-alertmanager
+    dest: /etc/sysconfig/prometheus-alertmanager
+    mode: "0644"
+  register: alertmanager_sysconfig_conf  
+
+
+- name: Restart alertmanager
+  ansible.builtin.service:
+    name: prometheus-alertmanager.service
+    enabled: true
+    state: restarted
+  when:
+    - alertmanager_conf.changed or alertmanager_sysconfig_conf.changed or
+      ansible_facts.services["prometheus-alertmanager.service"].state != "running"

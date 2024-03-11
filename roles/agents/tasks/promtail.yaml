@@ -1,0 +1,36 @@
+---
+
+- name: Permit traffic for Promtail ports
+  ansible.posix.firewalld:
+    port: "{{promtail_port}}/tcp"
+    permanent: true
+    state: enabled
+    immediate: true
+  when:
+    - "'firewalld' in ansible_facts.packages"
+    - ansible_facts.services["firewalld.service"].state == "running"
+
+- name: Install promtail
+  community.general.zypper:
+    name: promtail
+    state: latest
+
+- name: Create /etc/loki/promtail.yaml
+  ansible.builtin.template:
+    src: promtail.yaml
+    dest: /etc/loki/promtail.yaml
+    mode: "0644"
+  register: promtail_conf  
+
+- name: Restart promtail
+  ansible.builtin.service:
+    name: promtail.service
+    enabled: true
+    state: restarted
+  when:
+    - promtail_conf.changed or
+      ansible_facts.services["promtail.service"].state != "running"  
+
+
+      
+
