@@ -1,0 +1,10 @@
+[Unit]
+Description=
+Documentation=/usr/share/doc/PCM
+[Service]
+Type=simple
+Restart=no
+EnvironmentFile=-/etc/sysconfig/pcm-sensor-server
+ExecStart=/usr/sbin/pcm-sensor-server $ARGS
+[Install]
+WantedBy=multi-user.target

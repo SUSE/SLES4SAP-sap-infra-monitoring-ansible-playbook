@@ -17,10 +17,11 @@
 * Promtail 
 * Prometheus Note Exporter
 * Collectd
+* PCM
 
 
 ## Customizable Settings:
-The deployment should be adaptable to an existing infrastructure. Therefore different settings are configurable via default variables.<br> 
+The deployment should be adaptable to an existing infrastructure. Therefore different settings are configurable via default variables. 
 These variables are stored under [/roles/configuration/vars/default.yaml](roles/configuration/vars/default.yaml).
 
 The following settings are possible:

@@ -1,6 +1,6 @@
 ---
 
-- name: Permit traffic in default zone for loki port
+- name: Firewall permit traffic for loki port
   ansible.posix.firewalld:
     port: "{{loki_port}}/tcp"
     permanent: true

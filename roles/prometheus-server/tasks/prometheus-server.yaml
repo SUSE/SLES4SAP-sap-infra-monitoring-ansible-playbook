@@ -1,6 +1,6 @@
 ---
 
-- name: Permit traffic in default zone for prometheus ports
+- name: Firewall permit traffic for prometheus ports
   ansible.posix.firewalld:
     port: "{{prometheus_port}}/tcp"
     permanent: true

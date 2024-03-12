@@ -1,38 +1,22 @@
 
-# Grafana Dashboard: Set port on firewall and in grafana.ini.
+# Grafana Dashboard
 grafana_http_port: 3000
-
-# Prometheus: # Set on prometheus arguments(sysconfig) and on firewall.
-prometheus_port: 9090
-
-# Prometheus-alertmanager: 
-prometheus_alertmanager_port: 9093
-
-# Node exporter: Set the port on node_exporter, on agents firewall and in the prometheus.yaml file.
-node_exporter_port: 9100
-
-# Loki: Set Port on firewall 
-loki_port: 3100
-
-# Promtail: Set port on firewall
-promtail_port: 9080
-
-# Grafana: Admin Password
 grafana_admin_password: 'Suse1234'
 
-
-# Prometheus: Argumemts under sysconfig/prometheus-node_exporter.
+# Prometheus
+prometheus_port: 9090
 prometheus_args:
   - storage.tsdb.retention.time=40d 
   - web.enable-lifecycle
   - web.listen-address=:{{prometheus_port}}
 
-# Prometheus Alertmanager: Argumemts under sysconfig/prometheus-node_exporter.
+# Prometheus-alertmanager 
+prometheus_alertmanager_port: 9093
 prometheus_alertmanager_args:
   - web.listen-address=:{{prometheus_alertmanager_port}}
 
-
-# Node exporter: Argumemts under sysconfig/prometheus-node_exporter.
+# Node exporter
+node_exporter_port: 9100
 node_exporter_args:
   - collector.systemd
   - no-collector.mdadm 
@@ -49,6 +33,11 @@ node_exporter_args:
   - no-collector.arp
   - web.listen-address=:{{node_exporter_port}}
   
+# Loki 
+loki_port: 3100
+
+# Promtail
+promtail_port: 9080
 
 # Collectd: Set port
 collectd_port: 9103
@@ -56,5 +45,8 @@ collectd_port: 9103
 # Collectd: IP address target
 ping_target: 192.168.1.163    # Please change this IP to a valid one
 
-
+# pcm: set port
+pcm_port: 9738
+pcm_args:
+  - p {{pcm_port}}
 

@@ -21,6 +21,10 @@
   ansible.builtin.include_tasks:
     ./collectd.yaml    
 
+- name: pcm
+  ansible.builtin.include_tasks:
+    ./pcm.yaml      
+
 
 
 

@@ -1,6 +1,6 @@
 ---
 
-- name: Permit traffic in default zone for grafana port
+- name: Firewall permit traffic for grafana port
   ansible.posix.firewalld:
     port: "{{ grafana_http_port }}/tcp"
     permanent: true

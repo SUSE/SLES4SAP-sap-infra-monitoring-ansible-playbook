@@ -1,6 +1,6 @@
 ---
 
-- name: Permit traffic for Promtail ports
+- name: Firewall permit traffic for Promtail ports
   ansible.posix.firewalld:
     port: "{{promtail_port}}/tcp"
     permanent: true

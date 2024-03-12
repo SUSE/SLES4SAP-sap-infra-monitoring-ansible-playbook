@@ -1,6 +1,6 @@
 ---
 
-- name: Permit traffic for collectd port
+- name: Firewall permit traffic for collectd port
   ansible.posix.firewalld:
     port: "{{collectd_port}}/tcp"
     permanent: true

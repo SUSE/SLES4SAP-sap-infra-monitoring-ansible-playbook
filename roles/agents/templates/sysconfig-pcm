@@ -1,0 +1,11 @@
+## Path:        Hardware/PCM
+## Description: Intel® Performance Counter Monitor
+## Type:        string
+## Default:     ''
+#
+# Additional arguments for the pcm-sensor-server.
+# Please call: /usr/bin/pcm-sensor-server --help
+# for a full list of possible options.
+# Note: Please keep the list on one line, of possible.
+#
+ARGS="{% for args in pcm_args %}-{{ args }} {% endfor %}"

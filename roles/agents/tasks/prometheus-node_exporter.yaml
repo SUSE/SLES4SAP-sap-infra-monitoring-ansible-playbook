@@ -1,6 +1,6 @@
 ---
 
-- name: Permit traffic for  node-exporter port
+- name: Firewall permit traffic for  node-exporter port
   ansible.posix.firewalld:
     port: "{{node_exporter_port}}/tcp"
     permanent: true

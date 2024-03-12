@@ -1,6 +1,6 @@
 ---
 
-- name: Permit traffic for alermanager port
+- name: Firewall permit traffic for alermanager port
   ansible.posix.firewalld:
     port: "{{prometheus_alertmanager_port}}/tcp"
     permanent: true
