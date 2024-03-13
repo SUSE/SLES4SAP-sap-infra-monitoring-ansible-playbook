@@ -50,5 +50,5 @@ ansible-galaxy collection install -r requirements.yaml
 ansible-playbook -i inventory.yaml --user root playbook.yaml
 ```
 
-Please change [inventory.yaml](inventory,yaml), [playbook-monitoring.yaml](playbook-monitoring.yaml) file and  [/roles/configuration/vars/default.yaml](roles/configuration/vars/default.yaml) before run ansible.
+Please change [inventory.yaml](inventory.yaml), [playbook-monitoring.yaml](playbook-monitoring.yaml) file and  [/roles/configuration/vars/default.yaml](roles/configuration/vars/default.yaml) before run ansible.
 
