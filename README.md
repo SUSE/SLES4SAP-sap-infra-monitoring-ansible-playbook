@@ -41,7 +41,7 @@ This can be either for each component a different host or one for all components
 All monitored hosts (agent hosts) will be automatically add to the server configurations (e.g. /etc/prometheus/prometheus.yaml)  
 
 
-## Install Ansible:
+## Install and run Ansible:
 Install ansible, playbook dependencies and finally run the playbook:
 
 ```
