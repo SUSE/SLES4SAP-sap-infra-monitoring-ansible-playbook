@@ -3,7 +3,7 @@
  This ansible playbook is deploying most of the monitoring solutions discussed in the Best Practice Paper:<br>
  [Infrastructure monitoring for SAP Systems](https://documentation.suse.com/sbp/sap-15/html/SBP-SLES4SAP-sap-infra-monitoring/index.html).
  
- 
+
  ## Components:
  The following components are currently implemented:   
 
@@ -40,4 +40,15 @@ There should be only one host entry for each server component in the section "Se
 This can be either for each component a different host or one for all components. 
 All monitored hosts (agent hosts) will be automatically add to the server configurations (e.g. /etc/prometheus/prometheus.yaml)  
 
+
+## Install Ansible:
+Install ansible, playbook dependencies and finally run the playbook:
+
+```
+pip install ansible
+ansible-galaxy collection install -r requirements.yaml
+ansible-playbook -i inventory.yaml --user root playbook.yaml
+```
+
+Please change [inventory.yaml](inventory,yaml), [playbook-monitoring.yaml](playbook-monitoring.yaml) file and  [/roles/configuration/vars/default.yaml](roles/configuration/vars/default.yaml) before run ansible.
 

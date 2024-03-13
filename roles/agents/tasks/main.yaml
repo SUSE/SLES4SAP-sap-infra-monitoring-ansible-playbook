@@ -12,7 +12,7 @@
 - name: Prometheus node exporter
   ansible.builtin.include_tasks:
     ./prometheus-node_exporter.yaml
-
+  
 - name: Promtail
   ansible.builtin.include_tasks:
     ./promtail.yaml
