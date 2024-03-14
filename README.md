@@ -60,8 +60,8 @@ monitoring-agents:
       deploy_node_exporter: false
     host03.example.com:   
 ```
-In the example above collectd will not be deployed at all. <br> 
-The node_exporter will be installed on all hosts but not on **host02.example.com**. 
+In the example above **collectd** will not be deployed at all. <br> 
+The **node_exporter** will be installed on all hosts but not on **host02.example.com**. 
 
 
 ## Install and run Ansible:
