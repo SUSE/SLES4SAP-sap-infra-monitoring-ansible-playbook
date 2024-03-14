@@ -2,10 +2,6 @@
   ansible.builtin.include_tasks:
     ../../configuration/tasks/gathering-facts.yaml
 
-- name: Default vars
-  ansible.builtin.include_vars:
-    ../../configuration/vars/default.yaml
-
 - name: Prometheus Server
   ansible.builtin.include_tasks:
     ./prometheus-server.yaml

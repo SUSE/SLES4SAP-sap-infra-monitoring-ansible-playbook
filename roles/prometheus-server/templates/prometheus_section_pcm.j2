@@ -1,0 +1,8 @@
+
+  - job_name: pcm
+    static_configs:
+    - targets:
+{% for host in groups['monitoring-agents'] -%}
+{% if hostvars[host]['deploy_pcm'] %}
+      - {{ host }}:{{pcm_port}}
+{% endif %}{% endfor %}

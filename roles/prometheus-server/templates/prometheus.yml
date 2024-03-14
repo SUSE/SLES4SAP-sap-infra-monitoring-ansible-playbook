@@ -19,25 +19,14 @@ scrape_configs:
     - targets:
       - localhost:{{prometheus_port}}
 
-  - job_name: node-exporter
-    static_configs:
-    - targets:
-      {% for host in groups['monitoring-agents'] -%}
-      - {{ host }}:{{node_exporter_port}} 
-      {% endfor %}
+{% if deploy_node_exporter %}
+  {% include 'prometheus_section_node-exporter.j2' %}
+{% endif %}
 
+{% if deploy_collectd %}
+  {% include 'prometheus_section_collectd.j2' %}
+{% endif %}
 
-  - job_name: collectd
-    static_configs:
-    - targets:
-       {% for host in groups['monitoring-agents'] -%}
-      - {{ host }}:{{collectd_port}} 
-      {% endfor %}
-
-
-  - job_name: pcm
-    static_configs:
-    - targets:
-       {% for host in groups['monitoring-agents'] -%}
-      - {{ host }}:{{pcm_port}} 
-      {% endfor %}
+{% if deploy_pcm %}
+  {% include 'prometheus_section_pcm.j2' %}
+{% endif %}

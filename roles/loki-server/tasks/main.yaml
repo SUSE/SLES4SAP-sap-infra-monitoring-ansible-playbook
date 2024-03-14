@@ -2,10 +2,6 @@
   ansible.builtin.include_tasks:
     ../../configuration/tasks/gathering-facts.yaml
 
-- name: Default vars
-  ansible.builtin.include_vars:
-    ../../configuration/vars/default.yaml
-
 - name: Loki
   ansible.builtin.include_tasks:
     ./loki.yaml

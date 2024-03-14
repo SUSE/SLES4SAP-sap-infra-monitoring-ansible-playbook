@@ -4,26 +4,24 @@
   ansible.builtin.include_tasks:
     ../../configuration/tasks/gathering-facts.yaml
 
-- name: Default vars
-  ansible.builtin.include_vars:
-    ../../configuration/vars/default.yaml
-
-
-- name: Prometheus node exporter
-  ansible.builtin.include_tasks:
-    ./prometheus-node_exporter.yaml
-  
 - name: Promtail
   ansible.builtin.include_tasks:
     ./promtail.yaml
 
+- name: Prometheus node exporter
+  ansible.builtin.include_tasks:
+    ./prometheus-node_exporter.yaml
+  when: deploy_node_exporter  
+  
 - name: Collectd
   ansible.builtin.include_tasks:
-    ./collectd.yaml    
+    ./collectd.yaml 
+  when: deploy_collectd     
 
 - name: pcm
   ansible.builtin.include_tasks:
-    ./pcm.yaml      
+    ./pcm.yaml
+  when: deploy_pcm        
 
 
 
