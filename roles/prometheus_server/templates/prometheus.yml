@@ -6,7 +6,7 @@ alerting:
   alertmanagers:
   - static_configs:
     - targets:
-      {% for host in groups['prometheus-alertmanager'] -%}
+      {% for host in groups['prometheus_alertmanager'] -%}
       - {{ host }}:{{prometheus_alertmanager_port}}
       {% endfor %}
 

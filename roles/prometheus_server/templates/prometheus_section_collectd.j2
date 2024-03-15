@@ -2,7 +2,7 @@
   - job_name: collectd
     static_configs:
     - targets:
-{% for host in groups['monitoring-agents'] -%}
+{% for host in groups['monitoring_agents'] -%}
 {% if hostvars[host]['deploy_collectd'] %}
       - {{ host }}:{{collectd_port}}
 {% endif %}{% endfor %}

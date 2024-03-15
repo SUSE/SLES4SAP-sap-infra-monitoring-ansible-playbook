@@ -1,32 +1,38 @@
 ---
+- hosts: all
+  ignore_unreachable: true
 
 - name: Grafana server deployment
   hosts:
-    - grafana-server
+    - grafana_server
   roles:
-    - grafana-server
+    - role: grafana_server  
+      when: deploy_grafana_server
 
 - name: Prometheus server deployment
   hosts:
-    - prometheus-server
+    - prometheus_server
   roles:
-    - prometheus-server
+    - role: prometheus_server
+      when: deploy_prometheus_server
 
 - name: Prometheus alertmanager deployment
   hosts:
-    - prometheus-alertmanager
+    - prometheus_alertmanager
   roles:
-    - prometheus-alertmanager
+    - role: prometheus_alertmanager
+      when: deploy_prometheus_alertmanager
 
 - name: Loki server deployment
   hosts:
-    - loki-server
+    - loki_server
   roles:
-    - loki-server    
-
+    - role: loki_server    
+      when: deploy_loki_server
 
 - name: monitoring agent deployment
   hosts:
-    - monitoring-agents
+    - monitoring_agents
   roles:
-    - agents
+    - role: agents
+      when: deploy_monitoring_agents

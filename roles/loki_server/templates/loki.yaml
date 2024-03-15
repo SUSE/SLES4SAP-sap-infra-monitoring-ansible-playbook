@@ -45,7 +45,7 @@ ruler:
       # Given the directory parameter below the rules files have to store under /etc/loki/rules/fake/
       directory: /etc/loki/rules
   rule_path: /var/lib/loki/scratch
-  alertmanager_url: http://{% for host in groups['prometheus-alertmanager'] -%}{{ host }}{% endfor %}:{{prometheus_alertmanager_port}}
+  alertmanager_url: http://{% for host in groups['prometheus_alertmanager'] -%}{{ host }}{% endfor %}:{{prometheus_alertmanager_port}}
   # Time to wait before resend an alert to alertmanager
   # resend_delay: 12h
   enable_alertmanager_v2: true

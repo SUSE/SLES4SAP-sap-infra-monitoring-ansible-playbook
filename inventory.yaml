@@ -1,35 +1,42 @@
 ---
 all:
   vars:
-    # General deployment for all hosts
+    # General deployment for the different host groups
+    deploy_grafana_server: true
+    deploy_prometheus_server: true
+    deploy_prometheus_alertmanager: true
+    deploy_loki_server: true
+    deploy_monitoring_agents: true 
+
+
+    # General component deployment for all hosts
     deploy_node_exporter: true
     deploy_collectd: true
     deploy_pcm: true
 
+
 # Server Hosts
-grafana-server:
+grafana_server:
   hosts:
     am-grafana.work.home:
 
-prometheus-server:
+prometheus_server:
   hosts:
     am-prometheus.work.home:
 
-prometheus-alertmanager:
+prometheus_alertmanager:
   hosts:
     am-alertmanager.work.home:
 
-loki-server:
+loki_server:
   hosts:
     am-loki.work.home:   
 
 
 # Systems to be monitored
-monitoring-agents:
+monitoring_agents:
   hosts:
     am-agent.work.home:
-      deploy_pcm: false
-      deploy_node_exporter: false 
     am-agent02.work.home:
-      deploy_collectd: false
+
  

@@ -6,7 +6,7 @@ positions:
   filename: /var/lib/promtail/positions.yaml
 
 clients:
- - url: http://{% for host in groups['loki-server'] -%}{{ host }}{% endfor %}:{{loki_port}}/loki/api/v1/push
+ - url: http://{% for host in groups['loki_server'] -%}{{ host }}{% endfor %}:{{loki_port}}/loki/api/v1/push
 
 
 scrape_configs:
