@@ -34,18 +34,27 @@ If a firewall is active, ports will be automatically add (permit traffic).
 Some components needs different arguments which are typically implemented in sysconfig files.
 These arguments can also easily changed within group_vars. 
 
-## Hosts:
-All needed hosts can be add to the [inventory.yaml](inventory.yaml) file. <br>
-There should be only one host entry for each server component in the section "Server Hosts"
-This can be either for each component a different host or one for all components.
+## Inventory file:
+All needed hosts can be add to the [inventory.yaml](inventory.yaml) file.
 
-Monitored hosts (agent hosts) will be automatically add to the server configurations <br>
-(e.g. /etc/prometheus/prometheus.yaml)  
+### Server Host Groups:
+There should be only one host entry for each server group (e.g. grafana_server, prometheus_server, ...) in the section "Server Hosts"
+This can be either for each component a different host or up to one for all group.
 
-Variables starting with **deploy_** are used to choose if a component is enabled or not (true/false). They are set to **true** as a general default in the section **all**. <br>
+### Agent Host Groups:
+Systems to be monitored (agent_xyz) will be automatically add to the server configurations (e.g. /etc/prometheus/prometheus.yaml)
+They can be grouped into different host group. Important is that the group name has to start with:
+
+```
+agents_
+```
+**IMPORTANT:** Having the same host in different **Agent Host Groups** is not allowed.  
+
+### Deployment fine tuning:
+Variables starting with **deploy_** are used to choose if a server or component is enabled or not (true/false). They are set to **true** as a general default in the section **all**. <br>
 Setting it to **false**  no host will be deployed with that component at all.
 
-The variables **deploy_** can also be used to disable single hosts under a host entry. 
+The variables **deploy_** can also be used to disable/enable components for single hosts under a host entry. <br>Here is a example:
 
 ```
 all:
@@ -53,7 +62,7 @@ all:
     deploy_node_exporter: true
     deploy_collectd: false
 
-monitoring-agents:
+agents_kvm:
   hosts:
     host01.example.com:
     host02.example.com:

@@ -2,17 +2,17 @@
 all:
   vars:
     # General deployment for the different host groups
-    deploy_grafana_server: false
+    deploy_grafana_server: true
     deploy_prometheus_server: true
-    deploy_prometheus_alertmanager: false
-    deploy_loki_server: false
+    deploy_prometheus_alertmanager: true
+    deploy_loki_server: true
     deploy_monitoring_agents: true 
 
 
     # General component deployment for all hosts
-    deploy_node_exporter: false
-    deploy_collectd: false
-    deploy_pcm: false
+    deploy_node_exporter: true
+    deploy_collectd: true
+    deploy_pcm: true
 
 
 # Server Hosts
@@ -52,7 +52,7 @@ agents_havester:
 agents_infra:
   hosts:
     am-agent.work.home:
-      deploy_node_exporter: true
+      deploy_node_exporter: false
     am-agent08.work.home:
     am-agent14.work.home:
-      deploy_pcm: true
+      deploy_pcm: false
