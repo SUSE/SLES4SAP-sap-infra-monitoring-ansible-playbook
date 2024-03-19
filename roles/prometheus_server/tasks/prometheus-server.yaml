@@ -45,4 +45,4 @@
     enabled: true
   when: 
     - prometheus_sysconfig_conf.changed or prometheus_conf.changed or prometheus_rules_conf.changed or     
-      ansible_facts.services["prometheus.service"].state != "running"
+      ansible_facts.services["prometheus.service"].state != "running"  

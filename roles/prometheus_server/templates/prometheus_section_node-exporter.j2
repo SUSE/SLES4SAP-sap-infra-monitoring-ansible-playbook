@@ -1,8 +1,0 @@
-
-  - job_name: node-exporter
-    static_configs:
-    - targets:
-{% for host in groups['monitoring_agents'] -%}
-{% if hostvars[host]['deploy_node_exporter'] %}
-      - {{ host }}:{{node_exporter_port}}
-{% endif %}{% endfor %}

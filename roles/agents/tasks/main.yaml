@@ -22,9 +22,3 @@
   ansible.builtin.include_tasks:
     ./pcm.yaml
   when: deploy_pcm        
-
-
-
-
-
-
