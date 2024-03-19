@@ -36,4 +36,4 @@
     state: restarted
   when:
     - pcm_sysconfig_conf.changed or 
-      ansible_facts.services["prometheus-node_exporter.service"].state != "running" 
+      ansible_facts.services["pcm.service"].state != "running" 

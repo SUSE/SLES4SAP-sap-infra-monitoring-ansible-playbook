@@ -52,7 +52,6 @@ agents_havester:
 agents_infra:
   hosts:
     am-agent.work.home:
-      deploy_node_exporter: false
     am-agent08.work.home:
-    am-agent14.work.home:
-      deploy_pcm: false
+    am-agent02.work.home:
+
