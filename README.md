@@ -20,7 +20,7 @@
 * PCM
 
 
-## Customizable Settings:
+## General Customizable Settings:
 The deployment should be adaptable to an existing infrastructure. Therefore different settings are configurable via default variables. 
 These variables are stored under [/group_vars/all/main.yaml](group_vars/all/main.yaml).
 
@@ -71,6 +71,24 @@ agents_kvm:
 ```
 In the example above **collectd** will not be deployed at all. <br> 
 The **node_exporter** will be installed on all hosts but not on **host02.example.com**. 
+
+
+#### Grafana Dashboard
+* Default configuration can be changed in the section **Grafana Dashboard** under [/group_vars/all/main.yaml](group_vars/all/main.yaml)
+
+#### Prometheus Server
+* Default configuration can be changed in the section **Prometheus** under [/group_vars/all/main.yaml](group_vars/all/main.yaml).
+* Any additional exporter configuration can be add to the end of the [prometheus.yaml](/roles/prometheus_server/templates/prometheus.yml) template file.
+* Additional rule files should be add to the folder **/roles/prometheus_server/templates/rules/*.yaml**
+* If the variable **deploy_prometheus_alertmanager** (inventory.yaml) is set to **false** or there is no host entry under the host group **prometheus_alertmanager** the **alerting section** in the prometheus.yml file will be removed. 
+
+#### Prometheus Alertmanager
+* Default configuration can be changed in the section **Prometheus Alertmanager** under [/group_vars/all/main.yaml](group_vars/all/main.yaml)
+* The file [alertmanager.yml](/roles/prometheus_alertmanager/templates/alertmanager.yml) contains a very basic example mailserver configuration and needs to be adapted to your needs.  
+
+#### Loki Server
+* Default configuration can be changed in the section **Loki** under [/group_vars/all/main.yaml](group_vars/all/main.yaml)
+
 
 
 ## Install and run Ansible:

@@ -2,7 +2,7 @@
 all:
   vars:
     # General deployment for the different host groups
-    deploy_grafana_server: true
+    deploy_grafana_server: false
     deploy_prometheus_server: true
     deploy_prometheus_alertmanager: true
     deploy_loki_server: true
@@ -37,21 +37,9 @@ loki_server:
 
 agents_kvm:
   hosts:
-    am-kvm-agent.work.home:
-    am-kvm-agent02.work.home:
-    am-kvm-agent09.work.home:
-    am-kvm-agent14.work.home:
-
-
-agents_havester:
-  hosts:
-    am-ha-agent08.work.home:
-    am-ha-agent14.work.home:
-
+    am-agent.work.home:
 
 agents_infra:
   hosts:
-    am-agent.work.home:
-    am-agent08.work.home:
     am-agent02.work.home:
 

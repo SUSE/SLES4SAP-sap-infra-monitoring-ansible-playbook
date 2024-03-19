@@ -32,9 +32,11 @@
 
 - name: Create rule file
   ansible.builtin.template:
-    src: rules.yaml
-    dest: /etc/prometheus/rules.yaml
+    src: "{{ item }}"
+    dest: /etc/prometheus/{{ item | basename }}
     mode: "0644"
+  with_fileglob:
+    - templates/rules/*.yaml
   register: prometheus_rules_conf
 
 

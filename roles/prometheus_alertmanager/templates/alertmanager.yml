@@ -9,10 +9,10 @@ route:
   group_wait: 20s
   group_interval: 5m
   repeat_interval: 24h
-  receiver: 'docker-mailserver'
+  receiver: 'mailserver'
 
 receivers:
-  - name: 'docker-mailserver'
+  - name: 'mailserver'
     email_configs:
       - smarthost: 192.168.1.72:25
         to: 'info@work.home'

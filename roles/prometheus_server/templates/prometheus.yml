@@ -2,6 +2,8 @@
 global:
   scrape_interval:     5s 
 
+# Alerting section
+{% if groups['prometheus_alertmanager'] | length  == 1 and deploy_prometheus_alertmanager %}
 alerting:
   alertmanagers:
   - static_configs:
@@ -9,9 +11,10 @@ alerting:
       {% for host in groups['prometheus_alertmanager'] -%}
       - {{ host }}:{{prometheus_alertmanager_port}}
       {% endfor %}
+{% endif %}
 
 rule_files:
-  - /etc/prometheus/rules.yaml
+  - /etc/prometheus/*.yaml
   
 scrape_configs:
   - job_name: prometheus
@@ -38,3 +41,4 @@ scrape_configs:
 {% endif %}
 {% endfor %}
 
+# Please put you extra exporter configuration here:

@@ -9,7 +9,7 @@ prometheus_args:
   - web.enable-lifecycle
   - web.listen-address=:{{prometheus_port}}
 
-# Prometheus-alertmanager 
+# Prometheus Alertmanager 
 prometheus_alertmanager_port: 9093
 prometheus_alertmanager_args:
   - web.listen-address=:{{prometheus_alertmanager_port}}

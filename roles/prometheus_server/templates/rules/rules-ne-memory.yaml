@@ -1,0 +1,43 @@
+#jinja2:variable_start_string:'[%', variable_end_string:'%]', trim_blocks: False
+
+groups:
+- name: prometheus-ne-memory
+  rules:
+    - alert: high-memory-usage
+      expr: 100-((100 / node_memory_MemTotal_bytes * node_memory_MemAvailable_bytes)) > 80
+      annotations:
+        summary: "System memory usage is higher than 85 % on {{ $labels.instance }}."
+        description: "The memory usage is by {{ printf \"%.2f\" $value }} %. Please check the system to avoid system outage."
+
+    - alert: host-memory-under-memory-pressure
+      expr: rate(node_vmstat_pgmajfault[1m]) > 1000
+      for: 15m
+      annotations:
+        summary: Host memory under memory pressure (instance {{ $labels.instance }})
+        description: The node is under heavy memory pressure.high-memory-usage High rate of major page faults  VALUE = {{ $value }}  LABELS = {{ $labels }}
+
+    - alert: host-out-of-memory
+      expr: node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes * 100 < 5
+      for: 15m
+      annotations:
+        summary: Host out of memory (instance {{ $labels.instance }})
+        description: Node memory is filling up (< 5% left)  VALUE = {{ $value }}  LABELS = {{ $labels }}
+
+    - alert: high-swap-usage
+      expr: ((node_memory_SwapTotal_bytes - node_memory_SwapFree_bytes)*100) / node_memory_SwapTotal_bytes > 50
+      annotations:
+        summary: System swap usage is higher than 50 % on {{ $labels.instance }}.
+        description: The swap usage is {{ $value }} %. Please check the system to avoid system outage.
+
+    - alert: memory-error
+      expr: node_memory_HardwareCorrupted_bytes != 0
+      annotations:
+        summary: Memory module is broken on {{ $labels.instance }}
+        description: Harware corrupted Bytes are dedected. Please run a memtest on {{ $labels.instance }}.
+
+    - alert: oom-kill-detected
+      expr: increase(node_vmstat_oom_kill[1m]) > 0
+      annotations:
+        summar: OOM kill detected on {{ $labels.instance }}
+        description: The kernel killed one or more processes because of a out of memory situation (oom).
+
