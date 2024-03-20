@@ -7,6 +7,8 @@
 - name: Promtail
   ansible.builtin.include_tasks:
     ./promtail.yaml
+  when: 
+    - deploy_loki_server and (groups['loki_server'] | length  == 1) 
 
 - name: Prometheus node exporter
   ansible.builtin.include_tasks:

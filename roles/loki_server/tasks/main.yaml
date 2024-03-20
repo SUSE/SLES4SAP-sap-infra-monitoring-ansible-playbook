@@ -5,6 +5,8 @@
 - name: Loki
   ansible.builtin.include_tasks:
     ./loki.yaml
+  when: 
+    - deploy_loki_server and (groups['loki_server'] | length  == 1)  
 
 
 

@@ -4,7 +4,7 @@ all:
     # General deployment for the different host groups
     deploy_grafana_server: false
     deploy_prometheus_server: true
-    deploy_prometheus_alertmanager: true
+    deploy_prometheus_alertmanager: true  
     deploy_loki_server: true
     deploy_monitoring_agents: true 
 
@@ -34,12 +34,13 @@ loki_server:
 
 
 # Systems to be monitored
-
 agents_kvm:
   hosts:
     am-agent.work.home:
 
-agents_infra:
+ agents_infra:
   hosts:
     am-agent02.work.home:
+
+  
 

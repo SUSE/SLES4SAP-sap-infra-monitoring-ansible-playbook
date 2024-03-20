@@ -34,7 +34,6 @@
   hosts:
     - agents_infra
     - agents_kvm
-    - agents_havester
 
   roles:
     - role: agents
