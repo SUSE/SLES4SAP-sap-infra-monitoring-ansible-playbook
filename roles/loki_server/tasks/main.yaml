@@ -1,6 +1,9 @@
 - name: Additional facts
   ansible.builtin.include_tasks:
     ../../configuration/tasks/gathering-facts.yaml
+  when: 
+    - deploy_loki_server and (groups['loki_server'] | length  == 1)  
+  
 
 - name: Loki
   ansible.builtin.include_tasks:

@@ -32,9 +32,7 @@
 
 - name: monitoring agent deployment
   hosts:
-    - agents_infra
-    - agents_kvm
-
+    - monitored_hosts
   roles:
     - role: agents
       when: deploy_monitoring_agents

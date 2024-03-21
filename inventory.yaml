@@ -15,7 +15,7 @@ all:
     deploy_pcm: true
 
 
-# Server Hosts
+# Grouped server hosts (can be in each group the same host)
 grafana_server:
   hosts:
     am-grafana.work.home:
@@ -33,14 +33,19 @@ loki_server:
     am-loki.work.home:   
 
 
-# Systems to be monitored
+# Grouped hosts to be monitored (Please add new groups to the nested group below as well)
+# Don't use any host twice. 
 agents_kvm:
   hosts:
     am-agent.work.home:
 
- agents_infra:
+agents_infra:
   hosts:
     am-agent02.work.home:
 
+# Nested group will be used for playbook (Please don't use any single host entry)  
+monitored_hosts:
+  children:
+    agents_infra:
+    agents_kvm:
   
-
