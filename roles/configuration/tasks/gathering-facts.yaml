@@ -1,7 +1,4 @@
-
-#- name: Collect package facts
-#  package_facts:
-#    manager: auto
+---
 
 - name: Collect package facts
   ansible.builtin.package_facts:
