@@ -45,7 +45,6 @@ collectd_port: 9103
 ping_target: 192.168.1.163    # Please change this IP to a valid one
 
 # pcm: set port
-#deploy_pcm: true
 pcm_port: 9738
 pcm_args:
   - p {{pcm_port}}
