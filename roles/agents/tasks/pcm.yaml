@@ -1,39 +1,70 @@
 ---
 
-- name: Firewall permit traffic for pcm port
-  ansible.posix.firewalld:
-    port: "{{pcm_port}}/tcp"
-    permanent: true
-    state: enabled
-    immediate: true
-  when:
-    - "'firewalld' in ansible_facts.packages"
-    - ansible_facts.services["firewalld.service"].state == "running"
+# Deploy PCM
+- block:
 
-- name: Install pcm
-  community.general.zypper:
-    name: pcm
-    state: latest
+  - name: Firewall permit traffic for pcm port
+    ansible.posix.firewalld:
+      port: "{{pcm_port}}/tcp"
+      permanent: true
+      state: enabled
+      immediate: true
+    when:
+      - "'firewalld' in ansible_facts.packages"
+      - ansible_facts.services["firewalld.service"].state == "running"
 
-- name: Create pcm sysconfig file
-  ansible.builtin.template:
-    src: sysconfig-pcm
-    dest: /etc/sysconfig/pcm-sensor-server
-    mode: "0644"
-  register: pcm_sysconfig_conf
+  - name: Install pcm
+    community.general.zypper:
+      name: pcm
+      state: latest
 
-- name: Create pcm systemd service file
-  ansible.builtin.template:
-    src: pcm_systemd_service
-    dest: /etc/systemd/system/pcm.service
-    mode: "0644"
-  register: pcm_systemd_service_conf 
+  - name: Create pcm sysconfig file
+    ansible.builtin.template:
+      src: sysconfig-pcm
+      dest: /etc/sysconfig/pcm-sensor-server
+      mode: "0644"
+    register: pcm_sysconfig_conf
 
-- name: Restart pcm
-  ansible.builtin.service:
-    name: pcm.service
-    enabled: true
-    state: restarted
-  when:
-    - pcm_sysconfig_conf.changed or 
-      ansible_facts.services["pcm.service"].state != "running" 
+  - name: Create pcm systemd service file
+    ansible.builtin.template:
+      src: pcm_systemd_service
+      dest: /etc/systemd/system/pcm.service
+      mode: "0644"
+    register: pcm_systemd_service_conf 
+
+  - name: Restart pcm
+    ansible.builtin.service:
+      name: pcm.service
+      enabled: true
+      state: restarted
+    when:
+      - pcm_sysconfig_conf.changed or 
+        ansible_facts.services["pcm.service"].state != "running" 
+
+  when: deploy_prometheus_server and (groups['prometheus_server'] | length  == 1) and deploy_pcm
+
+
+# Don't deploy PCM, stop service and disable port 
+- block:
+
+  - name: Stop PCM
+    ansible.builtin.service:
+      name: pcm.service
+      enabled: false
+      state: stopped
+
+  # Please note that "immediate:" is not set to disable the firewall rule.
+  # This is needed to disable the port also on a stopped firewalld.
+  - name: Firewall disable collectd port
+    ansible.posix.firewalld:
+      port: "{{pcm_port}}/tcp"
+      permanent: true
+      offline: true
+      state: disabled
+    when:
+      - "'firewalld' in ansible_facts.packages"
+
+  when: not deploy_prometheus_server or (groups['prometheus_server'] | length  == 0) or not deploy_pcm
+
+
+

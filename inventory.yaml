@@ -2,17 +2,17 @@
 all:
   vars:
     # General deployment for the different host groups
-    deploy_grafana_server: false
+    deploy_grafana_server: true
     deploy_prometheus_server: true
     deploy_prometheus_alertmanager: true  
     deploy_loki_server: true
-    deploy_monitoring_agents: true 
 
 
     # General component deployment for all hosts
     deploy_node_exporter: true
     deploy_collectd: true
     deploy_pcm: true
+    deploy_promtail: true
 
 
 # Grouped server hosts (can be in each group the same host)
@@ -43,7 +43,9 @@ agents_infra:
   hosts:
     am-agent02.work.home:
 
-# Nested group will be used for playbook (Please don't use any single host entry)  
+
+# Nested group will be used for playbook (Please don't use any single host entry)
+# Please add new host groups here as well.
 monitored_hosts:
   children:
     agents_infra:

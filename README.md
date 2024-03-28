@@ -52,7 +52,9 @@ agents_
 
 ### Deployment fine tuning:
 Variables starting with **deploy_** are used to choose if a server or component is enabled or not (true/false). They are set to **true** as a general default in the section **all**. <br>
-Setting it to **false**  no host will be deployed with that component at all.
+Setting it to **false**  no host will be deployed with that component at all all.
+
+If for a **Server Component** is either no host given or the deploy_ variable is set to false the service will be stopped and the firewall port dissabled (In case it ws running before). This is also true for all depending exporter (for Prometheus) or promtail services (for Loki) on the agent hosts. 
 
 The variables **deploy_** can also be used to disable/enable components for single hosts under a host entry. <br>Here is a example:
 

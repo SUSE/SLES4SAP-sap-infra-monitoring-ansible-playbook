@@ -2,9 +2,17 @@
   ansible.builtin.include_tasks:
     ../../configuration/tasks/gathering-facts.yaml
 
-- name: Prometheus
+- name: Alertmanager
   ansible.builtin.include_tasks:
     ./prometheus-alertmanager.yaml
+  when: deploy_prometheus_alertmanager
 
+
+- name: Alertmanager service stop
+  ansible.builtin.service:
+    name: prometheus-alertmanager.service
+    enable: false
+    state: stopped
+  when: not deploy_prometheus_alertmanager
 
 

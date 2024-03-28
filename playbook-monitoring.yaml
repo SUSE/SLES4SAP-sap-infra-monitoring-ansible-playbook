@@ -7,32 +7,31 @@
     - grafana_server
   roles:
     - role: grafana_server  
-      when: deploy_grafana_server
+
 
 - name: Prometheus server deployment
   hosts:
     - prometheus_server
   roles:
     - role: prometheus_server
-      when: deploy_prometheus_server
+
 
 - name: Prometheus alertmanager deployment
   hosts:
     - prometheus_alertmanager
   roles:
     - role: prometheus_alertmanager
-      when: deploy_prometheus_alertmanager
+
 
 - name: Loki server deployment
   hosts:
     - loki_server
   roles:
     - role: loki_server    
-      when: deploy_loki_server
+
 
 - name: monitoring agent deployment
   hosts:
     - monitored_hosts
   roles:
     - role: agents
-      when: deploy_monitoring_agents

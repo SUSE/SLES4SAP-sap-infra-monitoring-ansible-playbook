@@ -7,20 +7,15 @@
 - name: Promtail
   ansible.builtin.include_tasks:
     ./promtail.yaml
-  when: 
-    - deploy_loki_server and (groups['loki_server'] | length  == 1) 
 
 - name: Prometheus node exporter
   ansible.builtin.include_tasks:
     ./prometheus-node_exporter.yaml
-  when: deploy_node_exporter  
   
 - name: Collectd
   ansible.builtin.include_tasks:
     ./collectd.yaml 
-  when: deploy_collectd     
 
 - name: pcm
   ansible.builtin.include_tasks:
-    ./pcm.yaml
-  when: deploy_pcm        
+    ./pcm.yaml     

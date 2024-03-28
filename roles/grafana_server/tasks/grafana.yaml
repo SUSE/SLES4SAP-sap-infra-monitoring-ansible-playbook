@@ -1,44 +1,70 @@
 ---
 
-- name: Firewall permit traffic for grafana port
-  ansible.posix.firewalld:
-    port: "{{ grafana_http_port }}/tcp"
-    permanent: true
-    state: enabled
-    immediate: true
-  when:
-    - "'firewalld' in ansible_facts.packages"
-    - ansible_facts.services["firewalld.service"].state == "running"
+# Deploy Grafana
+- block:
 
-- name: Install grafana
-  community.general.zypper:
-    name: grafana
-    state: latest
+  - name: Firewall permit traffic for grafana port
+    ansible.posix.firewalld:
+      port: "{{ grafana_http_port }}/tcp"
+      permanent: true
+      state: enabled
+      immediate: true
+    when:
+      - "'firewalld' in ansible_facts.packages"
+      - ansible_facts.services["firewalld.service"].state == "running"
 
-- name: Set URL port
-  replace:
-    path: /etc/grafana/grafana.ini
-    regexp: '.*http_port\ .*'
-    replace: "http_port = {{ grafana_http_port }}"
-    backup: yes
-  register: grafana_port_conf
+  - name: Install grafana
+    community.general.zypper:
+      name: grafana
+      state: latest
 
-- name: Restart grafana
-  ansible.builtin.service:
-    name: grafana-server.service
-    enabled: true
-    state: restarted
-  when:
-    - grafana_port_conf.changed or
-      ansible_facts.services["grafana-server.service"].state != "running"  
+  - name: Set URL port
+    replace:
+      path: /etc/grafana/grafana.ini
+      regexp: '.*http_port\ .*'
+      replace: "http_port = {{ grafana_http_port }}"
+      backup: yes
+    register: grafana_port_conf
 
-
-# This task is an example on how to change the default password.
-# It will change it only if the default one (admin) is valid.
-- name: Change Password
-  shell: "grafana-cli admin reset-admin-password {{grafana_admin_password}}"
-  register: __command_admin
-  changed_when: __command_admin.rc !=0 
+  - name: Restart grafana
+    ansible.builtin.service:
+      name: grafana-server.service
+      enabled: true
+      state: restarted
+    when:
+      - grafana_port_conf.changed or
+        ansible_facts.services["grafana-server.service"].state != "running"  
 
 
+  # This task is an example on how to change the default password.
+  # It will change it only if the default one (admin) is valid.
+  - name: Change Password
+    shell: "grafana-cli admin reset-admin-password {{grafana_admin_password}}"
+    register: __command_admin
+    changed_when: __command_admin.rc !=0 
 
+  when: deploy_grafana_server and (groups['grafana_server'] | length  == 1)
+
+
+# Don't deploy Grafana, stop service and disable port 
+- block:
+
+  - name: Stop Grafana
+    ansible.builtin.service:
+      name: grafana-server.service
+      enabled: false
+      state: stopped
+
+  # Please note that "immediate:" is not set to disable the firewall rule.
+  # This is needed to disable the port also on a stopped firewalld.
+  - name: Firewall disable grafana port
+    ansible.posix.firewalld:
+      port: "{{ grafana_http_port }}/tcp"
+      permanent: true
+      offline: true
+      state: disabled
+    when:
+      - "'firewalld' in ansible_facts.packages"
+
+
+  when: not deploy_grafana_server or (groups['grafana_server'] | length  == 0)    

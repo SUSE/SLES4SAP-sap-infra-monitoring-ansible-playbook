@@ -1,49 +1,86 @@
 ---
 
-- name: Firewall permit traffic for collectd port
-  ansible.posix.firewalld:
-    port: "{{collectd_port}}/tcp"
-    permanent: true
-    state: enabled
-    immediate: true
-  when:
-    - "'firewalld' in ansible_facts.packages"
-    - ansible_facts.services["firewalld.service"].state == "running"
+# Deploy collectd
+- block:
 
-- name: Install collectd
-  community.general.zypper:
-    name: collectd
-    state: latest
+  - name: Firewall permit traffic for collectd port
+    ansible.posix.firewalld:
+      port: "{{collectd_port}}/tcp"
+      permanent: true
+      state: enabled
+      immediate: true
+    when:
+      - "'firewalld' in ansible_facts.packages"
+      - ansible_facts.services["firewalld.service"].state == "running"
 
-- name: Install collectd plugins
-  community.general.zypper:
-    name: collectd-plugins-all
-    state: latest
+  - name: Install collectd
+    community.general.zypper:
+      name: collectd
+      state: latest
 
-- name: Create systemd overwrite directory
-  ansible.builtin.file:
-    path: /etc/systemd/system/collectd.service.d
-    state: directory
+  - name: Install collectd plugins
+    community.general.zypper:
+      name: collectd-plugins-all
+      state: latest
 
-- name: Create systemd overwrite file
-  ansible.builtin.template:
-    src: collectd_systemd_overwrite_file.conf
-    dest: /etc/systemd/system/collectd.service.d/override.conf
-    mode: "0644"
-  register: collectd_overwrite_file_conf
+  - name: Create systemd overwrite directory
+    ansible.builtin.file:
+      path: /etc/systemd/system/collectd.service.d
+      state: directory
 
-- name: Create collectd config file 
-  ansible.builtin.template:
-    src: collectd.conf
-    dest: /etc/collectd.conf
-    mode: "0644"
-  register: collectd_config_file_conf
+  - name: Create systemd overwrite file
+    ansible.builtin.template:
+      src: collectd_systemd_overwrite_file.conf
+      dest: /etc/systemd/system/collectd.service.d/override.conf
+      mode: "0644"
+    register: collectd_overwrite_file_conf
 
-- name: Restart Collectd
-  ansible.builtin.service:
-    name: collectd.service
-    state: restarted 
-    enabled: true
-  when: 
-    - collectd_overwrite_file_conf.changed or collectd_config_file_conf.changed or    
-      ansible_facts.services["collectd.service"].state != "running"  
+  - name: Create collectd config file 
+    ansible.builtin.template:
+      src: collectd.conf
+      dest: /etc/collectd.conf
+      mode: "0644"
+    register: collectd_config_file_conf
+
+  - name: Restart Collectd
+    ansible.builtin.service:
+      name: collectd.service
+      state: restarted 
+      enabled: true
+    when: 
+      - collectd_overwrite_file_conf.changed or collectd_config_file_conf.changed or    
+        ansible_facts.services["collectd.service"].state != "running"  
+
+
+  when: deploy_prometheus_server and (groups['prometheus_server'] | length  == 1) and deploy_collectd
+
+
+# Don't deploy collectd, stop service and disable port 
+- block:
+
+  - name: Stop collectd
+    ansible.builtin.service:
+      name: collectd.service
+      enabled: false
+      state: stopped
+
+  # Please note that "immediate:" is not set to disable the firewall rule.
+  # This is needed to disable the port also on a stopped firewalld.
+  - name: Firewall disable collectd port
+    ansible.posix.firewalld:
+      port: "{{collectd_port}}/tcp"
+      permanent: true
+      offline: true
+      state: disabled
+    when:
+      - "'firewalld' in ansible_facts.packages"
+
+
+  when: not deploy_prometheus_server or (groups['prometheus_server'] | length  == 0) or not deploy_collectd
+
+
+
+
+
+
+

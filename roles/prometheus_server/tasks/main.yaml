@@ -5,6 +5,15 @@
 - name: Prometheus Server
   ansible.builtin.include_tasks:
     ./prometheus-server.yaml
+  when: deploy_prometheus_server
+
+- name: Prometheus service stop
+  ansible.builtin.service:
+    name: prometheus.service
+    enabled: false
+    state: stopped
+  when: not deploy_prometheus_server
+
 
 
 
