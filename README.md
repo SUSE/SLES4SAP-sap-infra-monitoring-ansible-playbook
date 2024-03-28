@@ -50,11 +50,11 @@ agents_
 ```
 **IMPORTANT:** Having the same host in different **Agent Host Groups** is not allowed.  
 
-### Deployment fine tuning:
+### Fine tuning
+
+#### Deployment in general  
 Variables starting with **deploy_** are used to choose if a server or component is enabled or not (true/false). They are set to **true** as a general default in the section **all**. <br>
 Setting it to **false**  no host will be deployed with that component at all all.
-
-If for a **Server Component** is either no host given or the deploy_ variable is set to false the service will be stopped and the firewall port dissabled (In case it ws running before). This is also true for all depending exporter (for Prometheus) or promtail services (for Loki) on the agent hosts. 
 
 The variables **deploy_** can also be used to disable/enable components for single hosts under a host entry. <br>Here is a example:
 
@@ -74,6 +74,7 @@ agents_kvm:
 In the example above **collectd** will not be deployed at all. <br> 
 The **node_exporter** will be installed on all hosts but not on **host02.example.com**. 
 
+If for a **Server Component** is either no host given or the deploy_ variable is set to false the service will be stopped and the firewall port dissabled (In case it was running before). This is also true for all depending exporter (for Prometheus) or promtail services (for Loki) on the agent hosts.  
 
 #### Grafana Dashboard
 * Default configuration can be changed in the section **Grafana Dashboard** under [/group_vars/all/main.yaml](group_vars/all/main.yaml)
