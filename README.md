@@ -39,11 +39,11 @@ All needed hosts can be add to the [inventory.yaml](inventory.yaml) file.
 
 ### Server Host Groups:
 There should be only one host entry for each server group (e.g. grafana_server, prometheus_server, ...) in the section "Server Hosts"
-This can be either for each component a different host or up to one for all group.
+This can be either for each component a different host or up to one for all groups.
 
 ### Agent Host Groups:
 Systems to be monitored (agent_xyz) will be automatically add to the server configurations (e.g. /etc/prometheus/prometheus.yaml)
-They can be grouped into different host group. Important is that the group name has to start with:
+They can be grouped into different host groups. Important is that the group name has to start with:
 
 ```
 agents_
@@ -83,7 +83,7 @@ If for a **Server Component** is either no host given or the deploy_ variable is
 * Default configuration can be changed in the section **Prometheus** under [/group_vars/all/main.yaml](group_vars/all/main.yaml).
 * Any additional exporter configuration can be add to the end of the [prometheus.yaml](/roles/prometheus_server/templates/prometheus.yml) template file.
 * Additional rule files should be add to the folder **/roles/prometheus_server/templates/rules/*.yaml**
-* If the variable **deploy_prometheus_alertmanager** (inventory.yaml) is set to **false** or there is no host entry under the host group **prometheus_alertmanager** the **alerting section** in the prometheus.yml file will be removed. 
+* If the variable **deploy_prometheus_alertmanager** (inventory.yaml) is set to **false** or there is no host entry under the host group **prometheus_alertmanager** the whole **alerting section** in the prometheus.yml file will be removed. 
 
 #### Prometheus Alertmanager
 * Default configuration can be changed in the section **Prometheus Alertmanager** under [/group_vars/all/main.yaml](group_vars/all/main.yaml)
