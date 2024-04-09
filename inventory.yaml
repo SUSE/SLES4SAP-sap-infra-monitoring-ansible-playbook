@@ -4,7 +4,7 @@ all:
     # General deployment for the different host groups
     deploy_grafana_server: true
     deploy_prometheus_server: true
-    deploy_prometheus_alertmanager: true  
+    deploy_prometheus_alertmanager: true
     deploy_loki_server: true
 
 
@@ -20,17 +20,21 @@ grafana_server:
   hosts:
     am-grafana.work.home:
 
+
 prometheus_server:
   hosts:
     am-prometheus.work.home:
 
+
 prometheus_alertmanager:
   hosts:
-    am-alertmanager.work.home:
+   am-alertmanager.work.home:
+
 
 loki_server:
   hosts:
-    am-loki.work.home:   
+    am-loki.work.home:
+
 
 
 # Grouped hosts to be monitored (Please add new groups to the nested group below as well)
@@ -38,6 +42,7 @@ loki_server:
 agents_kvm:
   hosts:
     am-agent.work.home:
+
 
 agents_infra:
   hosts:

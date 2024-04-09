@@ -45,6 +45,7 @@
       name: prometheus-node_exporter.service
       enabled: false
       state: stopped
+    when: "'golang-github-prometheus-node_exporter' in ansible_facts.packages"  
 
   # Please note that "immediate:" is not set to disable the firewall rule.
   # This is needed to disable the port also on a stopped firewalld.

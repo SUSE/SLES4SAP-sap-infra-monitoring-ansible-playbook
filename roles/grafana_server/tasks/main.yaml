@@ -4,7 +4,7 @@
   ansible.builtin.include_tasks:
     ../../configuration/tasks/gathering-facts.yaml
 
-- name: Grafana
+- name: Grafana deployment
   ansible.builtin.include_tasks:
     ./grafana.yaml
 

@@ -7,6 +7,6 @@
 - name: Loki
   ansible.builtin.include_tasks:
     ./loki.yaml
-  when: deploy_loki_server
+
 
 

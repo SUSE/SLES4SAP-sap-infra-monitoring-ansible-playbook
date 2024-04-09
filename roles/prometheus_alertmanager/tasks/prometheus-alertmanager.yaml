@@ -54,7 +54,9 @@
     ansible.builtin.service:
       name: prometheus-alertmanager.service
       enabled: false
-      state: disabled
+      state: stopped
+    when: "'golang-github-prometheus-alertmanager' in ansible_facts.packages"      
+
 
   # Please note that "immediate:" is not set to disable the firewall rule.
   # This is needed to disable the port also on a stopped firewalld.
@@ -63,7 +65,7 @@
       port: "{{prometheus_alertmanager_port}}/tcp"
       permanent: true
       offline: true
-      state: disable
+      state: disabled
     when:
       - "'firewalld' in ansible_facts.packages"
 
