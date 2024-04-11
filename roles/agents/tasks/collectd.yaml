@@ -51,7 +51,6 @@
       - collectd_overwrite_file_conf.changed or collectd_config_file_conf.changed or    
         ansible_facts.services["collectd.service"].state != "running"  
 
-
   when: deploy_prometheus_server and (groups['prometheus_server'] | length  == 1) and deploy_collectd
 
 
@@ -75,7 +74,6 @@
       state: disabled
     when:
       - "'firewalld' in ansible_facts.packages"
-
 
   when: not deploy_prometheus_server or (groups['prometheus_server'] | length  == 0) or not deploy_collectd
 

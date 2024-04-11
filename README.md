@@ -35,11 +35,11 @@ Some components needs different arguments which are typically implemented in sys
 These arguments can also easily changed within group_vars. 
 
 ## Inventory file:
-All needed hosts can be add to the [inventory.yaml](inventory.yaml) file.
+All hosts should be add to the [inventory.yaml](inventory.yaml) file.
 
 ### Server Host Groups:
 There should be only one host entry for each server group (e.g. grafana_server, prometheus_server, ...) in the section "Server Hosts"
-This can be either for each component a different host or up to one for all groups.
+This can be either for each component a different host or up to one host for all groups.
 
 ### Agent Host Groups:
 Systems to be monitored (agent_xyz) will be automatically add to the server configurations (e.g. /etc/prometheus/prometheus.yaml)
@@ -50,13 +50,27 @@ agents_
 ```
 **IMPORTANT:** Having the same host in different **Agent Host Groups** is not allowed.  
 
-### Fine tuning
+### Fine tuning - Components and Exceptions
 
 #### Deployment in general  
 Variables starting with **deploy_** are used to choose if a server or component is enabled or not (true/false). They are set to **true** as a general default in the section **all**. <br>
-Setting it to **false**  no host will be deployed with that component at all all.
+Setting it to **false**  no host will be deployed with that component at all all. 
 
-The variables **deploy_** can also be used to disable/enable components for single hosts under a host entry. <br>Here is a example:
+ If you for example don't want to deploy any log aggregation (loki) you can set them to false:
+
+```
+all:
+  vars:
+    # General deployment for the different host groups
+    [...]
+    deploy_loki_server: false
+
+    # General component deployment for all hosts
+    [...]
+    deploy_promtail: false
+```
+
+The variables **deploy_** can also be used to disable/enable components for single hosts within a **Agent Host Group** <br>Here is a example:
 
 ```
 all:
