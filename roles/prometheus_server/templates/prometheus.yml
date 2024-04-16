@@ -20,7 +20,7 @@ scrape_configs:
   - job_name: prometheus
     static_configs:
     - targets:
-      - localhost:{{prometheus_port}}
+      - {% for host in groups['prometheus_server'] -%}{{ host }}{% endfor %}:{{prometheus_port}}
 
 {% for host_group in groups -%}
 {% if host_group.startswith('agents') %} 
