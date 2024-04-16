@@ -32,10 +32,15 @@
       mode: "0644"
     register: prometheus_conf
 
+  - name: Create a rules directory if it does not exist
+    ansible.builtin.file:
+      path:  /etc/prometheus/rules/
+      state: directory
+
   - name: Create rule file
     ansible.builtin.template:
       src: "{{ item }}"
-      dest: /etc/prometheus/{{ item | basename }}
+      dest: /etc/prometheus/rules/{{ item | basename }}
       mode: "0644"
     with_fileglob:
       - templates/rules/*.yaml

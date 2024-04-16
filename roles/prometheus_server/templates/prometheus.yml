@@ -14,7 +14,7 @@ alerting:
 {% endif %}
 
 rule_files:
-  - /etc/prometheus/*.yaml
+  - /etc/prometheus/rules/*.yaml
   
 scrape_configs:
   - job_name: prometheus
