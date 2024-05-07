@@ -13,6 +13,9 @@ all:
     deploy_pcm: true
     deploy_promtail: true
 
+    # Cleanup config files after removing packages. Can be set like the deploy_ files individually.
+    cleanup_config: false
+
 
 # Grouped server hosts (can be in each group the same host)
 grafana_server:

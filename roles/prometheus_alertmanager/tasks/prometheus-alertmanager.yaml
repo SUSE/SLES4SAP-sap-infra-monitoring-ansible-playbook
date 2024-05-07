@@ -3,7 +3,8 @@
 # Deploy Prometheus Alertmanager
 - block:
 
-  - name: Firewall permit traffic for alermanager port
+  # If firewall is running open the needed port.
+  - name: Prometheus Alertmanager - Firewall add port while online
     ansible.posix.firewalld:
       port: "{{prometheus_alertmanager_port}}/tcp"
       permanent: true
@@ -13,20 +14,20 @@
       - "'firewalld' in ansible_facts.packages"
       - ansible_facts.services["firewalld.service"].state == "running"
 
-  - name: Install prometheus-alertmanager
+  - name: Prometheus Alertmanager - Install package
     community.general.zypper:
       name: golang-github-prometheus-alertmanager
       state: latest
 
 
-  - name: Create alertmanager.yml
+  - name: Prometheus Alertmanager - Create config file
     ansible.builtin.template:
       src: alertmanager.yml
       dest: /etc/prometheus/alertmanager.yml
       mode: "0644"
     register: alertmanager_conf  
 
-  - name: Create prometheus alertmanager sysconfig file
+  - name: Prometheus Alertmanager - Create sysconfig file
     ansible.builtin.template:
       src: sysconfig-prometheus-alertmanager
       dest: /etc/sysconfig/prometheus-alertmanager
@@ -34,7 +35,7 @@
     register: alertmanager_sysconfig_conf  
 
 
-  - name: Restart alertmanager
+  - name: Prometheus Alertmanager - Restart service
     ansible.builtin.service:
       name: prometheus-alertmanager.service
       enabled: true
@@ -50,17 +51,25 @@
 # Don't deploy Prometheus Alertmanager, stop service and disable port 
 - block:
 
-  - name: Stop Alertmanager
-    ansible.builtin.service:
-      name: prometheus-alertmanager.service
-      enabled: false
-      state: stopped
-    when: "'golang-github-prometheus-alertmanager' in ansible_facts.packages"      
+  - name: Prometheus Alertmanager - Remove package
+    community.general.zypper:
+      name: golang-github-prometheus-alertmanager
+      state: absent
 
+  - name: Prometheus Alertmanager - Remove config files 
+    ansible.builtin.file:
+      path: /etc/prometheus/alertmanager.yml
+      state: absent
+    when: cleanup_config 
 
-  # Please note that "immediate:" is not set to disable the firewall rule.
-  # This is needed to disable the port also on a stopped firewalld.
-  - name: Firewall disable Alermanager port
+  - name: Prometheus Alertmanager - Remove sysconfig files 
+    ansible.builtin.file:
+      path: /etc/sysconfig/prometheus-alertmanager
+      state: absent
+    when: cleanup_config 
+
+  # If firewall is not running but installed we have to disable the ports without "immediate:".
+  - name:  Prometheus Alertmanager - Firewall remove port while offline
     ansible.posix.firewalld:
       port: "{{prometheus_alertmanager_port}}/tcp"
       permanent: true
@@ -68,5 +77,17 @@
       state: disabled
     when:
       - "'firewalld' in ansible_facts.packages"
+      - ansible_facts.services["firewalld.service"].state != "running"
+
+  # If firewall is running "immediate:" will be used to disable the port immediately.
+  - name: Prometheus Alertmanager - Firewall remove port while online
+    ansible.posix.firewalld:
+      port: "{{prometheus_alertmanager_port}}/tcp"
+      permanent: true
+      immediate: true
+      state: disabled
+    when:
+      - ansible_facts.services["firewalld.service"].state == "running"
+
 
   when: not deploy_prometheus_alertmanager or (groups['prometheus_alertmanager'] | length  == 0)    

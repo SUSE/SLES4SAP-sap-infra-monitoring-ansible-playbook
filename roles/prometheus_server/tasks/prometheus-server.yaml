@@ -3,7 +3,8 @@
 # Deploy Prometheus Server
 - block:
 
-  - name: Firewall permit traffic for prometheus ports
+  # If firewall is running open the needed port.
+  - name: Prometheus Server - Firewall add port while online
     ansible.posix.firewalld:
       port: "{{prometheus_port}}/tcp"
       permanent: true
@@ -13,31 +14,31 @@
       - "'firewalld' in ansible_facts.packages"
       - ansible_facts.services["firewalld.service"].state == "running"
 
-  - name: Install prometheus-server
+  - name: Prometheus Server - Install package
     community.general.zypper:
       name: golang-github-prometheus-prometheus
       state: latest
 
-  - name: Create prometheus sysconfig file
+  - name: Prometheus Server - Create sysconfig file
     ansible.builtin.template:
       src: sysconfig-prometheus
       dest: /etc/sysconfig/prometheus
       mode: "0644"
     register: prometheus_sysconfig_conf
     
-  - name: Create prometheus.yml
+  - name: Prometheus Server - Create config file
     ansible.builtin.template:
       src: prometheus.yml
       dest: /etc/prometheus/prometheus.yml
       mode: "0644"
     register: prometheus_conf
 
-  - name: Create a rules directory if it does not exist
+  - name: Prometheus Server - Create a rules directory
     ansible.builtin.file:
       path:  /etc/prometheus/rules/
       state: directory
 
-  - name: Create rule file
+  - name: Prometheus Server - Create rule file
     ansible.builtin.template:
       src: "{{ item }}"
       dest: /etc/prometheus/rules/{{ item | basename }}
@@ -46,7 +47,7 @@
       - templates/rules/*.yaml
     register: prometheus_rules_conf
 
-  - name: Restart prometheus
+  - name: Prometheus Server - Restart service
     ansible.builtin.service:
       name: prometheus.service
       state: restarted 
@@ -61,16 +62,27 @@
 # Don't deploy Prometheus Server, stop service and disable port  
 - block:
 
-  - name: Stop Prometheus
-    ansible.builtin.service:
-      name: prometheus.service
-      enabled: false
-      state: stopped
-    when: "'golang-github-prometheus-prometheus' in ansible_facts.packages"      
+  - name: Prometheus Server - Remove package
+    community.general.zypper:
+      name: golang-github-prometheus-prometheus
+      state: absent
 
-  # Please note that "immediate:" is not set to disable the firewall rule.
-  # This is needed to disable the port also on a stopped firewalld.
-  - name: Firewall disable prometheus ports
+  - name: Prometheus Server - Remove config files 
+    ansible.builtin.file:
+      path: /etc/prometheus/prometheus.yml
+      state: absent
+    when: cleanup_config 
+
+  - name: Prometheus Server - Remove rules 
+    ansible.builtin.file:
+      path: /etc/prometheus/rules/
+      state: absent
+    when: cleanup_config
+
+
+
+  # If firewall is not running but installed we have to disable the ports without "immediate:".
+  - name: Prometheus Server - Firewall remove port while offline
     ansible.posix.firewalld:
       port: "{{prometheus_port}}/tcp"
       permanent: true
@@ -78,6 +90,18 @@
       state: disabled
     when:
       - "'firewalld' in ansible_facts.packages"
+      - ansible_facts.services["firewalld.service"].state != "running"
+
+  # If firewall is running "immediate:" will be used to disable the port immediately.
+  - name: Prometheus Server - Firewall remove port while online
+    ansible.posix.firewalld:
+      port: "{{prometheus_port}}/tcp"
+      permanent: true
+      immediate: true
+      state: disabled
+    when:
+      - ansible_facts.services["firewalld.service"].state == "running"
+
 
   when: not deploy_prometheus_server or (groups['prometheus_server'] | length  == 0)
 

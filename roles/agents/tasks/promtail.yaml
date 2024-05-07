@@ -3,7 +3,7 @@
 # Deploy Promtail
 - block: 
     
-  - name: Firewall permit traffic for Promtail ports
+  - name: Promtail - Firewall permit traffic for Promtail ports
     ansible.posix.firewalld:
       port: "{{promtail_port}}/tcp"
       permanent: true
@@ -13,19 +13,19 @@
       - "'firewalld' in ansible_facts.packages"
       - ansible_facts.services["firewalld.service"].state == "running"
 
-  - name: Install promtail
+  - name: Promtail - Install package
     community.general.zypper:
       name: promtail
       state: latest
 
-  - name: Create /etc/loki/promtail.yaml
+  - name: Promtail - Create config file
     ansible.builtin.template:
       src: promtail.yaml
       dest: /etc/loki/promtail.yaml
       mode: "0644"
     register: promtail_conf  
 
-  - name: Restart promtail
+  - name: Promtail - Restart service
     ansible.builtin.service:
       name: promtail.service
       enabled: true
@@ -38,20 +38,17 @@
 
 
 
-# Don't deploy promtail, stop service and disable port 
+# Don't deploy promtail, remove package and disable port 
 - block:
 
-  - name: Stop Promtail
-    ansible.builtin.service:
-      name: promtail.service
-      enabled: false
-      state: stopped
-    when: "'promtail' in ansible_facts.packages"
-      
-      
-  # Please note that "immediate:" is not set to disable the firewall rule.
-  # This is needed to disable the port also on a stopped firewalld.
-  - name: Firewall disable collectd port
+  - name: Promtail - Remove config files 
+    ansible.builtin.file:
+      path: /etc/loki/promtail.yaml
+      state: absent
+    when: cleanup_config
+
+  # If firewall is not running but installed we have to disable the ports without "immediate:".
+  - name: Promtail - Firewall remove port while offline
     ansible.posix.firewalld:
       port: "{{promtail_port}}/tcp"
       permanent: true
@@ -59,7 +56,19 @@
       state: disabled
     when:
       - "'firewalld' in ansible_facts.packages"
+      - ansible_facts.services["firewalld.service"].state != "running"
+
+  # If firewall is running "immediate:" will be used to disable the port immediately.
+  - name: Promtail - Firewall remove port while online
+    ansible.posix.firewalld:
+      port: "{{promtail_port}}/tcp"
+      permanent: true
+      immediate: true
+      state: disabled
+    when:
+      - ansible_facts.services["firewalld.service"].state == "running"
+      
 
   when: not deploy_loki_server or (groups['loki_server'] | length  == 0) or not deploy_promtail
   
-
+  

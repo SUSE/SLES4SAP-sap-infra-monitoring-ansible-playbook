@@ -3,7 +3,8 @@
 # Deploy Loki
 - block:
 
-  - name: Firewall permit traffic for loki port
+# If firewall is running open the needed port.
+  - name: Loki - Firewall add port while online
     ansible.posix.firewalld:
       port: "{{loki_port}}/tcp"
       permanent: true
@@ -13,12 +14,12 @@
       - "'firewalld' in ansible_facts.packages"
       - ansible_facts.services["firewalld.service"].state == "running"
 
-  - name: Install loki
+  - name: Loki - Install package
     community.general.zypper:
       name: loki
       state: latest
 
-  - name: Create loki.yaml
+  - name: Loki - Create config file
     ansible.builtin.template:
       src: loki.yaml
       dest: /etc/loki/loki.yaml
@@ -26,7 +27,7 @@
       mode: "0644"
     register: loki_conf  
 
-  - name: Create rules directory
+  - name: Loki - Create rules directory
     ansible.builtin.file:
       path: /etc/loki/rules
       owner: loki
@@ -35,7 +36,7 @@
       state: directory
     register: loki_rules_conf  
 
-  - name: Restart Loki
+  - name: Loki - Restart service
     ansible.builtin.service:
       name: loki.service
       enabled: true
@@ -50,22 +51,43 @@
 # Don't deploy Loki, stop service and disable port 
 - block:
 
-  - name: Stop Loki
-    ansible.builtin.service:
-      name: loki.service
-      enabled: false
-      state: stopped
-    when: "'loki' in ansible_facts.packages"  
+  - name: Loki - Remove package
+    community.general.zypper:
+      name: loki
+      state: absent
 
-  # Please note that "immediate:" is not set to disable the firewall rule.
-  # This is needed to disable the port also on a stopped firewalld.
-  - name: Firewall disable loki port
+  - name: Loki - Remove config file
+    ansible.builtin.file:
+      path: /etc/loki/loki.yaml
+      state: absent
+    when: cleanup_config  
+
+  - name: Loki - Remove rule directory
+    ansible.builtin.file:
+      path: /etc/loki/rules/
+      state: absent
+    when: cleanup_config
+
+  # If firewall is not running but installed we have to disable the ports without "immediate:".
+  - name: Loki - Firewall remove port while offline
     ansible.posix.firewalld:
       port: "{{loki_port}}/tcp"
       permanent: true
       offline: true
       state: disabled
     when:
-      - "'firewalld' in ansible_facts.packages"    
+      - "'firewalld' in ansible_facts.packages"
+      - ansible_facts.services["firewalld.service"].state != "running"
+
+  # If firewall is running "immediate:" will be used to disable the port immediately.
+  - name: Loki - Firewall remove port while online
+    ansible.posix.firewalld:
+      port: "{{loki_port}}/tcp"
+      permanent: true
+      immediate: true
+      state: disabled
+    when:
+      - ansible_facts.services["firewalld.service"].state == "running"
+  
 
   when: not deploy_loki_server or (groups['loki_server'] | length  == 0)      

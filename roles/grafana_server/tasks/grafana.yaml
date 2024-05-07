@@ -3,7 +3,8 @@
 # Deploy Grafana
 - block:
 
-  - name: Firewall permit traffic for grafana port
+  # If firewall is running open the needed port.
+  - name: Grafana - Firewall add port while online
     ansible.posix.firewalld:
       port: "{{ grafana_http_port }}/tcp"
       permanent: true
@@ -13,12 +14,12 @@
       - "'firewalld' in ansible_facts.packages"
       - ansible_facts.services["firewalld.service"].state == "running"
 
-  - name: Install grafana
+  - name: Grafana - Install package
     community.general.zypper:
       name: grafana
       state: latest
 
-  - name: Set URL port
+  - name: Grafana - Set URL port
     replace:
       path: /etc/grafana/grafana.ini
       regexp: '.*http_port\ .*'
@@ -26,7 +27,7 @@
       backup: yes
     register: grafana_port_conf
 
-  - name: Restart grafana
+  - name: Grafana - Restart service
     ansible.builtin.service:
       name: grafana-server.service
       enabled: true
@@ -38,7 +39,7 @@
 
   # This task is an example on how to change the default password.
   # It will change it only if the default one (admin) is valid.
-  - name: Change Password
+  - name: Grafana - Change Password
     shell: "grafana-cli admin reset-admin-password {{grafana_admin_password}}"
     register: __command_admin
     changed_when: __command_admin.rc !=0 
@@ -49,27 +50,40 @@
 # Don't deploy Grafana, stop service and disable port 
 - block:
 
-  - name: Stop Grafana
-    ansible.builtin.service:
-      name: grafana-server.service
-      enabled: false
-      state: stopped
-    when: "'grafana' in ansible_facts.packages"  
+  - name: Grafana - Remove package
+    community.general.zypper:
+      name: grafana
+      state: absent
 
-  # Please note that "immediate:" is not set to disable the firewall rule.
-  # This is needed to disable the port also on a stopped firewalld.
-  - name: Firewall disable grafana port
+  - name: Grafana - Remove config files 
+    ansible.builtin.file:
+      path: /etc/grafana/grafana.ini
+      state: absent
+    when: cleanup_config 
+
+
+  # If firewall is not running but installed we have to disable the ports without "immediate:".
+  - name: Grafana - Firewall remove port while offline
     ansible.posix.firewalld:
-      port: "{{ grafana_http_port }}/tcp"
+      port: "{{grafana_http_port}}/tcp"
       permanent: true
       offline: true
       state: disabled
     when:
       - "'firewalld' in ansible_facts.packages"
+      - ansible_facts.services["firewalld.service"].state != "running"
+
+  # If firewall is running "immediate:" will be used to disable the port immediately.
+  - name: Grafana - Firewall remove port while online
+    ansible.posix.firewalld:
+      port: "{{grafana_http_port}}/tcp"
+      permanent: true
+      immediate: true
+      state: disabled
+    when:
+      - ansible_facts.services["firewalld.service"].state == "running" 
 
 
   when: not deploy_grafana_server or (groups['grafana_server'] | length  == 0)    
 
 
-
-  

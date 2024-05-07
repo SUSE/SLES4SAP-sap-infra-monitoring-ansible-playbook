@@ -3,46 +3,46 @@
 # Deploy collectd
 - block:
 
-  - name: Firewall permit traffic for collectd port
+  # If firewall is running open the needed port.
+  - name: Collectd - Firewall add port while online
     ansible.posix.firewalld:
       port: "{{collectd_port}}/tcp"
       permanent: true
       state: enabled
       immediate: true
     when:
-      - "'firewalld' in ansible_facts.packages"
       - ansible_facts.services["firewalld.service"].state == "running"
 
-  - name: Install collectd
+  - name: Collectd - Install package
     community.general.zypper:
       name: collectd
       state: latest
 
-  - name: Install collectd plugins
+  - name: Collectd - Install plugins package
     community.general.zypper:
       name: collectd-plugins-all
       state: latest
 
-  - name: Create systemd overwrite directory
+  - name: Collectd - Create systemd overwrite directory
     ansible.builtin.file:
       path: /etc/systemd/system/collectd.service.d
       state: directory
 
-  - name: Create systemd overwrite file
+  - name: Collectd - Create systemd overwrite file
     ansible.builtin.template:
       src: collectd_systemd_overwrite_file.conf
       dest: /etc/systemd/system/collectd.service.d/override.conf
       mode: "0644"
     register: collectd_overwrite_file_conf
 
-  - name: Create collectd config file 
+  - name: Collectd - Create config file 
     ansible.builtin.template:
       src: collectd.conf
       dest: /etc/collectd.conf
       mode: "0644"
     register: collectd_config_file_conf
 
-  - name: Restart Collectd
+  - name: Collectd - Restart service
     ansible.builtin.service:
       name: collectd.service
       state: restarted 
@@ -54,19 +54,40 @@
   when: deploy_prometheus_server and (groups['prometheus_server'] | length  == 1) and deploy_collectd
 
 
-# Don't deploy collectd, stop service and disable port 
+# Don't deploy collectd, remove package and disable port 
 - block:
 
-  - name: Stop collectd
-    ansible.builtin.service:
-      name: collectd.service
-      enabled: false
-      state: stopped
-    when: "'collectd' in ansible_facts.packages"  
+  - name: Collectd - Remove plugins package
+    community.general.zypper:
+      name: collectd-plugins-all
+      state: absent
 
-  # Please note that "immediate:" is not set to disable the firewall rule.
-  # This is needed to disable the port also on a stopped firewalld.
-  - name: Firewall disable collectd port
+  - name: Collectd - Remove package
+    community.general.zypper:
+      name: collectd
+      state: absent
+ 
+  - name: Collectd - Remove systemd overwrite file
+    ansible.builtin.file:
+      path: /etc/systemd/system/collectd.service.d/override.conf
+      state: absent
+    when: cleanup_config
+
+  - name: Collectd - Remove systemd overwrite directory
+    ansible.builtin.file:
+      path: /etc/systemd/system/collectd.service.d
+      state: absent
+    when: cleanup_config   
+
+  - name: Collectd - Remove config file
+    ansible.builtin.file:
+      path: /etc/collectd.conf
+      state: absent
+    when: cleanup_config  
+   
+
+  # If firewall is not running but installed we have to disable the ports without "immediate:".
+  - name: Collectd - Firewall remove port while offline
     ansible.posix.firewalld:
       port: "{{collectd_port}}/tcp"
       permanent: true
@@ -74,12 +95,18 @@
       state: disabled
     when:
       - "'firewalld' in ansible_facts.packages"
+      - ansible_facts.services["firewalld.service"].state != "running"
+
+  # If firewall is running "immediate:" will be used to disable the port immediately.
+  - name: Collectd - Firewall remove port while online
+    ansible.posix.firewalld:
+      port: "{{collectd_port}}/tcp"
+      permanent: true
+      immediate: true
+      state: disabled
+    when:
+      - ansible_facts.services["firewalld.service"].state == "running"
+
 
   when: not deploy_prometheus_server or (groups['prometheus_server'] | length  == 0) or not deploy_collectd
-
-
-
-
-
-
 

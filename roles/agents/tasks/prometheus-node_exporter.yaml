@@ -3,29 +3,29 @@
 # Deploy node_exporter
 - block:
 
-  - name: Firewall permit traffic for  node-exporter port
+  # If firewall is running open the needed port.
+  - name: Prometheus node exporter - Firewall add port while online
     ansible.posix.firewalld:
       port: "{{node_exporter_port}}/tcp"
       permanent: true
       state: enabled
       immediate: true
     when:
-      - "'firewalld' in ansible_facts.packages"
       - ansible_facts.services["firewalld.service"].state == "running"
 
-  - name: Install prometheus-node_exporter
+  - name: Prometheus node exporter - Install package
     community.general.zypper:
       name: golang-github-prometheus-node_exporter
       state: latest
 
-  - name: Create prometheus-node_exporter sysconfig file
+  - name: Prometheus node exporter - Create sysconfig file
     ansible.builtin.template:
       src: sysconfig-prometheus-node_exporter
       dest: /etc/sysconfig/prometheus-node_exporter
       mode: "0644"
     register: prometheus_node_exporter_sysconfig_conf  
 
-  - name: Restart prometheus-node_exporter
+  - name: Prometheus node exporter - Restart service
     ansible.builtin.service:
       name: prometheus-node_exporter.service
       enabled: true
@@ -37,19 +37,23 @@
   when: deploy_prometheus_server and (groups['prometheus_server'] | length  == 1) and deploy_node_exporter
 
 
-# Don't deploy node_exporter, stop service and disable port
+# Don't deploy node_exporter, uninstall and disable port
 - block:
 
-  - name: Stop prometheus-node_exporter
-    ansible.builtin.service:
-      name: prometheus-node_exporter.service
-      enabled: false
-      state: stopped
-    when: "'golang-github-prometheus-node_exporter' in ansible_facts.packages"  
+  - name: Prometheus node exporter - Remove package
+    community.general.zypper:
+      name: golang-github-prometheus-node_exporter
+      state: absent
 
-  # Please note that "immediate:" is not set to disable the firewall rule.
-  # This is needed to disable the port also on a stopped firewalld.
-  - name: Firewall disable collectd port
+  - name: Prometheus node exporter - Remove config file
+    ansible.builtin.file:
+      path: /etc/sysconfig/prometheus-node_exporter
+      state: absent
+    when: cleanup_config  
+
+
+  # If firewall is not running but installed we have to disable the ports without "immediate:".
+  - name: Prometheus node exporter - Firewall remove port while offline
     ansible.posix.firewalld:
       port: "{{node_exporter_port}}/tcp"
       permanent: true
@@ -57,6 +61,18 @@
       state: disabled
     when:
       - "'firewalld' in ansible_facts.packages"
+      - ansible_facts.services["firewalld.service"].state != "running"
+
+  # If firewall is running "immediate:" will be used to disable the port immediately.
+  - name: Prometheus node exporter - Firewall remove port while online
+    ansible.posix.firewalld:
+      port: "{{node_exporter_port}}/tcp"
+      permanent: true
+      immediate: true
+      state: disabled
+    when:
+      - ansible_facts.services["firewalld.service"].state == "running"
+
 
   when: not deploy_prometheus_server or (groups['prometheus_server'] | length  == 0) or not deploy_node_exporter
 

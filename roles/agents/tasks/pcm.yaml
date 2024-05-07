@@ -3,7 +3,8 @@
 # Deploy PCM
 - block:
 
-  - name: Firewall permit traffic for pcm port
+  # If firewall is running open the needed port.
+  - name: PCM - Firewall add port while online
     ansible.posix.firewalld:
       port: "{{pcm_port}}/tcp"
       permanent: true
@@ -13,29 +14,30 @@
       - "'firewalld' in ansible_facts.packages"
       - ansible_facts.services["firewalld.service"].state == "running"
 
-  - name: Install pcm
+  - name: PCM - Install package
     community.general.zypper:
       name: pcm
       state: latest
 
-  - name: Create pcm sysconfig file
+  - name: PCM - Create sysconfig file
     ansible.builtin.template:
       src: sysconfig-pcm
       dest: /etc/sysconfig/pcm-sensor-server
       mode: "0644"
     register: pcm_sysconfig_conf
 
-  - name: Create pcm systemd service file
+  - name: PCM - Create service file
     ansible.builtin.template:
       src: pcm_systemd_service
       dest: /etc/systemd/system/pcm.service
       mode: "0644"
     register: pcm_systemd_service_conf 
 
-  - name: Restart pcm
+  - name: PCM - Restart service
     ansible.builtin.service:
       name: pcm.service
       enabled: true
+      daemon_reload: true
       state: restarted
     when:
       - pcm_sysconfig_conf.changed or 
@@ -47,16 +49,39 @@
 # Don't deploy PCM, stop service and disable port 
 - block:
 
-  - name: Stop PCM
+  # The service files is created outsite of the package therefor the service has to be stopped before.
+  - name: PCM - Stop service
     ansible.builtin.service:
       name: pcm.service
       enabled: false
       state: stopped
-    when: "'pcm' in ansible_facts.packages"  
+    when: 
+      - ansible_facts.services["pcm.service"].state == "running"  
 
-  # Please note that "immediate:" is not set to disable the firewall rule.
-  # This is needed to disable the port also on a stopped firewalld.
-  - name: Firewall disable collectd port
+  - name: PCM - Remove package
+    community.general.zypper:
+      name: pcm
+      state: absent
+
+  - name: PCM - Remove sysconfig files 
+    ansible.builtin.file:
+      path: /etc/sysconfig/pcm-sensor-server
+      state: absent
+    when: cleanup_config  
+
+  - name: PCM - Remove systemd service files 
+    ansible.builtin.file:
+      path: /etc/systemd/system/pcm.service
+      state: absent
+    when: cleanup_config
+
+  # Systemd daemon should be reloaded to adjust the config changes.
+  - name: PCM - Reload systemd daemon
+    ansible.builtin.service:
+      daemon_reload: true    
+
+  # If firewall is not running but installed we have to disable the ports without "immediate:".
+  - name: PCM - Firewall remove port while offline
     ansible.posix.firewalld:
       port: "{{pcm_port}}/tcp"
       permanent: true
@@ -64,6 +89,18 @@
       state: disabled
     when:
       - "'firewalld' in ansible_facts.packages"
+      - ansible_facts.services["firewalld.service"].state != "running"
+
+  # If firewall is running "immediate:" will be used to disable the port immediately.
+  - name: PCM - Firewall remove port while online
+    ansible.posix.firewalld:
+      port: "{{pcm_port}}/tcp"
+      permanent: true
+      immediate: true
+      state: disabled
+    when:
+      - ansible_facts.services["firewalld.service"].state == "running"
+
 
   when: not deploy_prometheus_server or (groups['prometheus_server'] | length  == 0) or not deploy_pcm
 

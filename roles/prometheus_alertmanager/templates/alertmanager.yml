@@ -1,5 +1,7 @@
 #jinja2:variable_start_string:'[%', variable_end_string:'%]', trim_blocks: False
 
+# !! Attention !! Please change the config to you needs.
+
 global:
  resolve_timeout: 15s
  smtp_from: "mylab@work.home"
