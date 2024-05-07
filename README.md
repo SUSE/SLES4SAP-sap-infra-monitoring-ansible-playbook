@@ -15,7 +15,7 @@
 
 ### Data Sources (agent component):
 * Promtail 
-* Prometheus Note Exporter
+* Prometheus Node Exporter
 * Collectd
 * PCM
 
@@ -112,7 +112,7 @@ If in the  **Server Component** is no host given or the deploy_ variable is set 
 Install ansible, playbook dependencies and finally run the playbook:
 
 ```
-pip install ansible
+pip3 install ansible
 ansible-galaxy collection install -r requirements.yaml
 ```
 
