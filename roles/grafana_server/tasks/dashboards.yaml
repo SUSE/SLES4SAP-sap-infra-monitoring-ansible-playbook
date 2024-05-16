@@ -1,0 +1,28 @@
+# Grafana dashboards can be found under: https://grafana.com/grafana/dashboards/
+# Please download the dashboard json files to roles/grafana_server/templates/dashboards/
+
+  - name: Create  directory
+    ansible.builtin.file:
+      path:  /tmp/grafana/dashboards/
+      state: directory
+
+  - name: Dashboard json files 
+    ansible.builtin.copy:
+      src: "{{ item }}"
+      dest: /tmp/grafana/dashboards/{{ item | basename }}
+      mode: "0644"
+    with_fileglob:
+      - templates/dashboards/*.json
+
+  - name: Import Grafana dashboards
+    community.grafana.grafana_dashboard:
+      grafana_url: "http://{% for host in groups['grafana_server'] -%}{{ host }}{% endfor %}:{{grafana_http_port}}"
+      url_username: "admin"
+      url_password: "{{grafana_admin_password}}"
+      state: present
+      commit_message: Updated by ansible
+      overwrite: true
+      path: /tmp/grafana/dashboards/{{item | basename }}
+    with_fileglob:
+      - templates/dashboards/*.json
+

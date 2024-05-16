@@ -49,4 +49,4 @@ ping_target: 192.168.1.163    # Please change this IP to a valid one
 pcm_port: 9738
 pcm_args:
   - p {{pcm_port}}
-
+ 

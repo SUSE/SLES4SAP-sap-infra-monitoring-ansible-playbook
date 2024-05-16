@@ -3,6 +3,7 @@ all:
   vars:
     # General deployment for the different host groups
     deploy_grafana_server: true
+    deploy_grafana_dashboards: true
     deploy_prometheus_server: true
     deploy_prometheus_alertmanager: true
     deploy_loki_server: true
@@ -28,7 +29,7 @@ prometheus_server:
 
 prometheus_alertmanager:
   hosts:
-   am-alertmanager.work.home:
+    am-alertmanager.work.home:
 
 loki_server:
   hosts:
@@ -40,10 +41,11 @@ loki_server:
 agents_kvm:
   hosts:
     am-agent.work.home:
+    am-grafana.work.home:
 
 agents_infra:
   hosts:
-    am-agent02.work.home:
+    am-agent02.work.home:    
 
 
 # Nested group will be used for playbook (Please don't use any single host entry)

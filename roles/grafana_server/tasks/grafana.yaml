@@ -37,12 +37,34 @@
         ansible_facts.services["grafana-server.service"].state != "running"  
 
 
-  # This task is an example on how to change the default password.
-  # It will change it only if the default one (admin) is valid.
+  # Password will be changed only for the first time after the default one (admin) is valid.
   - name: Grafana - Change Password
     shell: "grafana-cli admin reset-admin-password {{grafana_admin_password}}"
     register: __command_admin
     changed_when: __command_admin.rc !=0 
+
+  - name: Create Prometheus datasource
+    community.grafana.grafana_datasource:
+      name: "prometheus"
+      grafana_url: "http://{% for host in groups['grafana_server'] -%}{{ host }}{% endfor %}:{{grafana_http_port}}"
+      grafana_user: "admin"
+      grafana_password: "{{grafana_admin_password}}"
+      ds_type: "prometheus"
+      ds_url: "http://{% for host in groups['prometheus_server'] -%}{{ host }}{% endfor %}:{{prometheus_port}}"
+      time_interval: ">10s"
+    when: deploy_prometheus_server and (groups['prometheus_server'] | length  == 1)
+
+
+  - name: Create Loki datasource
+    community.grafana.grafana_datasource:
+      name: "loki"
+      grafana_url: "http://{% for host in groups['grafana_server'] -%}{{ host }}{% endfor %}:{{grafana_http_port}}"
+      grafana_user: "admin"
+      grafana_password: "{{grafana_admin_password}}"
+      ds_type: "loki"
+      ds_url: "http://{% for host in groups['loki_server'] -%}{{ host }}{% endfor %}:{{loki_port}}"
+      time_interval: ">10s"
+    when: deploy_loki_server and (groups['loki_server'] | length  == 1)
 
   when: deploy_grafana_server and (groups['grafana_server'] | length  == 1)
 

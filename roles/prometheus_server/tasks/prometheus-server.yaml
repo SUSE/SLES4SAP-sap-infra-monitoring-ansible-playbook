@@ -39,7 +39,7 @@
       state: directory
 
   - name: Prometheus Server - Create rule file
-    ansible.builtin.template:
+    ansible.builtin.copy:
       src: "{{ item }}"
       dest: /etc/prometheus/rules/{{ item | basename }}
       mode: "0644"

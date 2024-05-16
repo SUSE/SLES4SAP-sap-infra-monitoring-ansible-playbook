@@ -8,3 +8,7 @@
   ansible.builtin.include_tasks:
     ./grafana.yaml
 
+- name: Grafana Dashboards
+  ansible.builtin.include_tasks:
+    ./dashboards.yaml
+  when: deploy_grafana_dashboards  
