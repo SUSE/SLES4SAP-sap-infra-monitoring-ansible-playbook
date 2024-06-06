@@ -4,6 +4,26 @@
  [Infrastructure monitoring for SAP Systems](https://documentation.suse.com/sbp/sap-15/html/SBP-SLES4SAP-sap-infra-monitoring/index.html).
  
 
+- [SLES4SAP-sap-infra-monitoring-ansible-playbook](#sles4sap-sap-infra-monitoring-ansible-playbook)
+  - [Components](#components)
+    - [Servers](#servers)
+    - [Agents](#agents)
+  - [Settings:](#settings)
+    - [Ports:](#ports)
+    - [Arguments:](#arguments)
+  - [Inventory file:](#inventory-file)
+    - [Server Host Groups:](#server-host-groups)
+    - [Agent Host Groups:](#agent-host-groups)
+    - [Fine tuning](#fine-tuning)
+      - [Deployment in general](#deployment-in-general)
+      - [Grafana Dashboard](#grafana-dashboard)
+      - [Prometheus Server](#prometheus-server)
+      - [Prometheus Alertmanager](#prometheus-alertmanager)
+      - [Loki Server](#loki-server)
+  - [Install and run Ansible:](#install-and-run-ansible)
+
+
+
  ## Components
  The following components are currently implemented:   
 
