@@ -4,18 +4,6 @@
  [Infrastructure monitoring for SAP Systems](https://documentation.suse.com/sbp/sap-15/html/SBP-SLES4SAP-sap-infra-monitoring/index.html).
  
 
-Table of content:
-- [Components](## Components)
-  - [Servers](### Servers)
-  - [Agents](### Agents)
-- [Settings](## Setting)
-  - [Ports](### Ports)
-  - [Arguments](### Arguments)
-- [Inventory file](## Inventory-file)
-  - [Server Host Groups](### Server-Host-Groups)
-  - [Agent Host Groups](### Agent-Host-Groups)
-
-
  ## Components
  The following components are currently implemented:   
 
