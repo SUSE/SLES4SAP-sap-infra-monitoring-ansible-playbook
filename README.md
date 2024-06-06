@@ -5,13 +5,16 @@
  
 
 Table of content:
-- [Components](##Components)
-  - [Servers](###Servers)
-  - [Agents](###Agents)
-- [Settings](##Setting)
-  - [Ports](###Ports)
-  - [Arguments](###Arguments)
-- [Inventory file](##Inventory-file)  
+- [Components](## Components)
+  - [Servers](### Servers)
+  - [Agents](### Agents)
+- [Settings](## Setting)
+  - [Ports](### Ports)
+  - [Arguments](### Arguments)
+- [Inventory file](## Inventory-file)
+  - [Server Host Groups](### Server-Host-Groups)
+  - [Agent Host Groups](### Agent-Host-Groups)
+
 
  ## Components
  The following components are currently implemented:   
@@ -61,7 +64,7 @@ agents_
 ```
 **IMPORTANT:** Having the same host in different **Agent Host Groups** is not allowed.  
 
-### Fine tuning - Components and Exceptions
+### Fine tuning
 
 #### Deployment in general  
 Variables starting with **deploy_** are used to choose if a server or component is enabled or not (true/false). They are set to **true** as a general default in the section **all**. <br>
