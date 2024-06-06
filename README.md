@@ -3,6 +3,7 @@
  This ansible playbook is deploying most of the monitoring solutions discussed in the Best Practice Paper:<br>
  [Infrastructure monitoring for SAP Systems](https://documentation.suse.com/sbp/sap-15/html/SBP-SLES4SAP-sap-infra-monitoring/index.html).
  
+ ---
 
 - [SLES4SAP-sap-infra-monitoring-ansible-playbook](#sles4sap-sap-infra-monitoring-ansible-playbook)
   - [Components](#components)
@@ -22,7 +23,7 @@
       - [Loki Server](#loki-server)
   - [Install and run Ansible:](#install-and-run-ansible)
 
-
+---
 
  ## Components
  The following components are currently implemented:   
