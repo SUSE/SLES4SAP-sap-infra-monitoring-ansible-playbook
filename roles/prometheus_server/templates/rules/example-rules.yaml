@@ -1,6 +1,6 @@
 
  groups:
- - name: prometheus-exporter
+ - name: example-rules-prometheus-exporter
    rules:
      - alert: exporter-down
        expr: up{job=~".+"} == 0

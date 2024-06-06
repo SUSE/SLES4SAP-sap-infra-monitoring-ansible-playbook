@@ -15,7 +15,7 @@ all:
     deploy_promtail: true
 
     # Cleanup config files after removing packages. Can be set like the deploy_ files individually.
-    cleanup_config: false
+    cleanup_config: true
 
 
 # Grouped server hosts (can be in each group the same host)

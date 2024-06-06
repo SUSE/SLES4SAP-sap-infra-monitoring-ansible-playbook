@@ -25,4 +25,3 @@
       path: /tmp/grafana/dashboards/{{item | basename }}
     with_fileglob:
       - templates/dashboards/*.json
-

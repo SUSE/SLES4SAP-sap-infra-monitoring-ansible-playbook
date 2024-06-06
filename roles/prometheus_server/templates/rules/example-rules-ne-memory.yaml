@@ -1,6 +1,6 @@
 
 groups:
-- name: prometheus-ne-memory
+- name: example-rules-prometheus-ne-memory
   rules:
     - alert: high-memory-usage
       expr: 100-((100 / node_memory_MemTotal_bytes * node_memory_MemAvailable_bytes)) > 80

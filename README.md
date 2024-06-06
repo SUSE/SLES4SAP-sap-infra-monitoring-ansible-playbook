@@ -4,29 +4,40 @@
  [Infrastructure monitoring for SAP Systems](https://documentation.suse.com/sbp/sap-15/html/SBP-SLES4SAP-sap-infra-monitoring/index.html).
  
 
- ## Components:
+Table of content:
+- [Components](##Components)
+  - [Servers](###Servers)
+  - [Agents](###Agents)
+- [Settings](##Setting)
+  - [Ports](###Ports)
+  - [Arguments](###Arguments)
+- [Inventory file](##Inventory-file)  
+
+ ## Components
  The following components are currently implemented:   
 
-### Data Storage, Visualization and Notification (server component):
+### Servers
+Data Storage, Visualization and Notification (Server components)
 * Grafana Dashboard
 * Prometheus Server
 * Prometheus Alertmanager
 * Loki Server
 
-### Data Sources (agent component):
+### Agents
+Data Source (Agent component):
 * Promtail 
 * Prometheus Node Exporter
 * Collectd
 * PCM
 
 
-## General Customizable Settings:
+## Settings:
 The deployment should be adaptable to an existing infrastructure. Therefore different settings are configurable via default variables. 
 These variables are stored under [/group_vars/all/main.yaml](group_vars/all/main.yaml).
 
 The following settings are possible:
 
-### Port Numbers:
+### Ports:
 Changing them will automatically change it to all depending components. 
 If a firewall is active, ports will be automatically add (permit traffic).
 
@@ -92,6 +103,8 @@ If in the  **Server Component** is no host given or the deploy_ variable is set 
 
 #### Grafana Dashboard
 * Default configuration can be changed in the section **Grafana Dashboard** under [/group_vars/all/main.yaml](group_vars/all/main.yaml)
+* Dashboards json files can be added to [/roles/templates/dashboards/](/roles/templates/dashboards/). 
+
 
 #### Prometheus Server
 * Default configuration can be changed in the section **Prometheus** under [/group_vars/all/main.yaml](group_vars/all/main.yaml).
