@@ -118,8 +118,8 @@ If in the  **Server Component** is no host given or the deploy_ variable is set 
 
 #### Grafana Dashboard
 * Default configuration can be changed in the section **Grafana Dashboard** under [/group_vars/all/main.yaml](group_vars/all/main.yaml)
-* Dashboards json files can be added to [/roles/grafana_server/templates/dashboards/](/roles/templates/dashboards/). 
-* There is a very simple example [dashboard](/roles/grafana_dashboard/templates/dashboards/Example_Dashboard.json) json file available.
+* Dashboards json files can be added to [/roles/grafana_server/templates/dashboards/](/roles/grafana_server/templates/dashboards/). 
+* There is a very simple example [dashboard](/roles/grafana_server/templates/dashboards/Example_Dashboard.json) json file available.
 
 
 #### Prometheus Server
