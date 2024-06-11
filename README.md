@@ -9,21 +9,24 @@
   - [Components](#components)
     - [Servers](#servers)
     - [Agents](#agents)
-  - [Settings:](#settings)
-    - [Ports:](#ports)
-    - [Arguments:](#arguments)
-  - [Inventory file:](#inventory-file)
-    - [Server Host Groups:](#server-host-groups)
-    - [Agent Host Groups:](#agent-host-groups)
+  - [Settings](#settings)
+    - [Ports](#ports)
+    - [Arguments](#arguments)
+  - [Inventory file](#inventory-file)
+    - [Server Host Groups](#server-host-groups)
+    - [Agent Host Groups](#agent-host-groups)
     - [Fine tuning](#fine-tuning)
       - [Deployment in general](#deployment-in-general)
       - [Grafana Dashboard](#grafana-dashboard)
       - [Prometheus Server](#prometheus-server)
       - [Prometheus Alertmanager](#prometheus-alertmanager)
       - [Loki Server](#loki-server)
-  - [Install and run Ansible:](#install-and-run-ansible)
+  - [Install and run Ansible](#install-and-run-ansible)
+  - [Compatibility](#compatibility)
+  - [Known Issues](#known-issues)
+    - [SLE15 SP4](#sle15-sp4)
 
----
+
 
  ## Components
  The following components are currently implemented:   
@@ -43,28 +46,28 @@ Data Source (Agent component):
 * PCM
 
 
-## Settings:
-The deployment should be adaptable to an existing infrastructure. Therefore different settings are configurable via default variables. 
+## Settings
+The deployment is adaptable to an existing infrastructure. Therefore different settings are configurable via default variables. 
 These variables are stored under [/group_vars/all/main.yaml](group_vars/all/main.yaml).
 
 The following settings are possible:
 
-### Ports:
+### Ports
 Changing them will automatically change it to all depending components. 
 If a firewall is active, ports will be automatically add (permit traffic).
 
-### Arguments:
+### Arguments
 Some components needs different arguments which are typically implemented in sysconfig files.
 These arguments can also easily changed within group_vars. 
 
-## Inventory file:
+## Inventory file
 All hosts should be add to the [inventory.yaml](inventory.yaml) file.
 
-### Server Host Groups:
+### Server Host Groups
 There should be only one host entry for each server group (e.g. grafana_server, prometheus_server, ...) in the section "Server Hosts"
 This can be either for each component a different host or up to one host for all groups.
 
-### Agent Host Groups:
+### Agent Host Groups
 Systems to be monitored (agent_xyz) will be automatically add to the server configurations (e.g. /etc/prometheus/prometheus.yaml)
 They can be grouped into different host groups. Important is that the group name has to start with:
 
@@ -116,6 +119,7 @@ If in the  **Server Component** is no host given or the deploy_ variable is set 
 #### Grafana Dashboard
 * Default configuration can be changed in the section **Grafana Dashboard** under [/group_vars/all/main.yaml](group_vars/all/main.yaml)
 * Dashboards json files can be added to [/roles/templates/dashboards/](/roles/templates/dashboards/). 
+* There is a very simple example [dashboard](/roles/templates/dashboards/Example_Dashboard.json) json file available.
 
 
 #### Prometheus Server
@@ -133,7 +137,7 @@ If in the  **Server Component** is no host given or the deploy_ variable is set 
 
 
 
-## Install and run Ansible:
+## Install and run Ansible
 Install ansible, playbook dependencies and finally run the playbook:
 
 ```
@@ -145,4 +149,34 @@ ansible-galaxy collection install -r requirements.yaml
 ansible-playbook -i inventory.yaml --user root playbook_monitoring.yaml
 ```
 Please change [inventory.yaml](inventory.yaml) and  [/group_vars/all/main.yaml](group_vars/all/main.yaml) before run ansible.
+
+
+## Compatibility
+
+The ansible playbook is tested with:
+
+* SUSE Linux Enterprise Server 15 SP4 (see Known Issues)
+* SUSE Linux Enterprise Server for SAP Applications 15 SP4 (see Known Issues)
+
+* SUSE Linux Enterprise Server 15 SP5
+* SUSE Linux Enterprise Server for SAP Applications 15 SP5 
+
+Other SLES versions and Service Pack's might work as well. The monitoring packages might be however on different non default repositories. (which has to be added before running ansible)
+
+
+
+## Known Issues
+
+### SLE15 SP4 
+SLE15 SP4 has a dependency problem by installing the prometheus server and the prometheus alertmanager. Ansible will stop with the error:
+
+--> Problem: nothing provides 'group(prometheus)' needed .....
+
+```
+TASK [prometheus_server : Prometheus Server - Install package] ***********************************************************
+fatal: [192.168.1.54]: FAILED! => {"changed": false, "cmd": ["/usr/bin/zypper", "--quiet", "--non-interactive", "--xmlout", "install", "--type", "package", "--auto-agree-with-licenses", "--no-recommends", "--", "+golang-github-prometheus-prometheus"], "msg": "Zypper run command failed with return code 4.......
+```
+
+This is fixed in SP5 but not in SP4. 
+(https://bugzilla.suse.com/show_bug.cgi?id=1218252)  
 

@@ -41,7 +41,8 @@ loki_server:
 agents_kvm:
   hosts:
     am-agent.work.home:
-    am-grafana.work.home:
+    am-prometheus.work.home:
+    pmdocker.work.home:
 
 agents_infra:
   hosts:
