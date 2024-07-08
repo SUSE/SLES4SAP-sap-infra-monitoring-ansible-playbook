@@ -39,10 +39,8 @@ loki_port: 3100
 # Promtail
 promtail_port: 9080
 
-# Collectd: Set port
+# Collectd
 collectd_port: 9103
-
-# Collectd: IP address target
 ping_target: 192.168.1.163    # Please change this IP to a valid one
 
 # pcm: set port

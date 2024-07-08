@@ -1,14 +1,14 @@
 ---
 all:
   vars:
-    # General deployment for the different host groups
+    # General server deployment
     deploy_grafana_server: true
     deploy_grafana_dashboards: true
     deploy_prometheus_server: true
     deploy_prometheus_alertmanager: true
     deploy_loki_server: true
 
-    # General component deployment for all hosts
+    # General client component deployment
     deploy_node_exporter: true
     deploy_collectd: true
     deploy_pcm: true
@@ -21,15 +21,15 @@ all:
 # Grouped server hosts (can be in each group the same host)
 grafana_server:
   hosts:
-    am-grafana.work.home:
+    grafana.example.com:
 
 prometheus_server:
   hosts:
-    am-prometheus.work.home:
+    prometheus.example.com:
 
 prometheus_alertmanager:
   hosts:
-    am-alertmanager.work.home:
+    alertmanager.example.com:
 
 loki_server:
   hosts:
@@ -40,13 +40,12 @@ loki_server:
 # Don't use any host twice. 
 agents_kvm:
   hosts:
-    am-agent.work.home:
-    am-prometheus.work.home:
-    pmdocker.work.home:
+    vhost01.example.com:
+    vhost02.example.com:
 
 agents_infra:
   hosts:
-    am-agent02.work.home:    
+    host02.example.com:   
 
 
 # Nested group will be used for playbook (Please don't use any single host entry)
