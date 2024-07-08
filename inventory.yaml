@@ -33,7 +33,7 @@ prometheus_alertmanager:
 
 loki_server:
   hosts:
-    am-loki.work.home:
+    loki.example.com:
 
 
 # Grouped hosts to be monitored (Please add new groups to the nested group below as well)
