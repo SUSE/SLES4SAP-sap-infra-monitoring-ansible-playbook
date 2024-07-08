@@ -11,7 +11,7 @@ all:
     # General client component deployment
     deploy_node_exporter: true
     deploy_collectd: true
-    deploy_pcm: true
+    deploy_pcm: false # Package avaialble on SLES for SAP Application only
     deploy_promtail: true
 
     # Cleanup config files after removing packages. Can be set like the deploy_ files individually.

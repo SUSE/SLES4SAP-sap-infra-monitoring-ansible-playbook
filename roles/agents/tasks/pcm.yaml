@@ -56,7 +56,8 @@
       enabled: false
       state: stopped
     when: 
-      - ansible_facts.services["pcm.service"].state == "running"  
+      - "'pcm' in ansible_facts.packages"
+      - ansible_facts.services["pcm.service"].state == "running"
 
   - name: PCM - Remove package
     community.general.zypper:
