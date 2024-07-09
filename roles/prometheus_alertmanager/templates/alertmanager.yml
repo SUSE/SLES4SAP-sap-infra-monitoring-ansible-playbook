@@ -1,10 +1,10 @@
 #jinja2:variable_start_string:'[%', variable_end_string:'%]', trim_blocks: False
 
 # !! Attention !! Please change the config to you needs.
+# For detail about all possible parameter please see: https://prometheus.io/docs/alerting/latest/configuration/
 
 global:
  resolve_timeout: 15s
- smtp_from: "mylab@work.home"
 
 route:
   group_by: ['alert']
@@ -15,11 +15,14 @@ route:
 
 receivers:
   - name: 'mailserver'
-    email_configs:
-      - smarthost: 192.168.1.72:25
-        to: 'info@work.home'
-        send_resolved: true
-        require_tls: false
+      email_configs:
+      - smarthost: 'smtp.example.com:587'
+        auth_username: '<your email id here>'
+        auth_password: "<your app password here>"
+        from: '<your email id here>'
+        to: '<receiver's email id here>'
+        headers:
+          subject: 'Prometheus Mail Alerts'
 
 
 
