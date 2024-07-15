@@ -138,7 +138,8 @@ If in the  **Server Component** is no host given or the deploy_ variable is set 
 
 
 ## Install and run Ansible
-It is recommended to use python311 and higher. In case the default python version is lower on the system it is possible to use a higer version in a seperate environment:
+It is recommended to use ansible version < 2.12 and python version 3.8 or newer. 
+In case the default python version is lower then 3.8 on the system it is possible to use a higer version in a seperate environment:
 
 ```
 # mkdir work
