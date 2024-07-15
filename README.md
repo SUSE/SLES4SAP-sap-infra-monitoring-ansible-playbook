@@ -138,15 +138,29 @@ If in the  **Server Component** is no host given or the deploy_ variable is set 
 
 
 ## Install and run Ansible
-Install ansible, playbook dependencies and finally run the playbook:
+It is recommended to use python311 and higher. In case the default python version is lower on the system it is possible to use a higer version in a seperate environment:
 
 ```
-pip3 install ansible
-ansible-galaxy collection install -r requirements.yaml
+# mkdir work
+# zypper in python311
+# python3.11 -m venv work
+# source work/bin/activate
+
+  (work) localhost:~ #
 ```
 
+Install ansible and dependencies.
+
 ```
-ansible-playbook -i inventory.yaml --user root playbook_monitoring.yaml
+# pip3 install ansible
+# ansible-galaxy collection install -r requirements.yaml
+```
+
+
+And finally run the playbook:
+
+```
+# ansible-playbook -i inventory.yaml --user root playbook-monitoring.yaml
 ```
 Please change [inventory.yaml](inventory.yaml) and  [/group_vars/all/main.yaml](group_vars/all/main.yaml) before run ansible.
 
