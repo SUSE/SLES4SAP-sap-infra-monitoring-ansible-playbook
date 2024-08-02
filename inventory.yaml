@@ -18,7 +18,7 @@ all:
     cleanup_config: true
 
 
-# Grouped server hosts (can be in each group the same host)
+# Server Host Group (can be in each group the same host)
 grafana_server:
   hosts:
     grafana.example.com:
@@ -36,7 +36,7 @@ loki_server:
     loki.example.com:
 
 
-# Grouped hosts to be monitored (Please add new groups to the nested group below as well)
+# Agent Host Groups (Please add new groups to the nested group below as well)
 # Don't use any host twice. 
 agents_kvm:
   hosts:
@@ -49,7 +49,7 @@ agents_infra:
 
 
 # Nested group will be used for playbook (Please don't use any single host entry)
-# Please add new host groups here as well.
+# IMPORTANT: Please add new Agent Host Groups here as well.
 monitored_hosts:
   children:
     agents_infra:
