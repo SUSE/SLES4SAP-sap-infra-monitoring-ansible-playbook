@@ -28,16 +28,24 @@ scrape_configs:
 {% if host_group.startswith('agents') %} 
   - job_name: {{ host_group }}
     static_configs:
-    - targets: 
 {% for host in groups[host_group] -%}
 {% if hostvars[host]['deploy_node_exporter'] %}
+    - targets: 
       - {{ host }}:{{node_exporter_port}}
+      labels:
+        inventory_hostname: {{ host }}
 {% endif -%} 
 {% if hostvars[host]['deploy_pcm'] %}
+    - targets: 
       - {{ host }}:{{pcm_port}}
+      labels:
+        inventory_hostname: {{ host }}      
 {% endif -%}
 {% if hostvars[host]['deploy_collectd'] %}
+    - targets: 
       - {{ host }}:{{collectd_port}}
+      labels:
+        inventory_hostname: {{ host }}      
 {% endif -%}
 {% endfor %}
 {% endif %}
