@@ -51,6 +51,8 @@
       grafana_password: "{{grafana_admin_password}}"
       ds_type: "prometheus"
       ds_url: "http://{% for host in groups['prometheus_server'] -%}{{ host }}{% endfor %}:{{prometheus_port}}"
+      basic_auth_user: "admin"   # See: https://github.com/ansible-collections/community.grafana/issues/248 (LiMuBei commented on Oct 8, 2023).
+      basic_auth_password: "{{grafana_admin_password}}" # If basic auth is not set it will fail changing datasource if already available.
       time_interval: ">10s"
     when: deploy_prometheus_server and (groups['prometheus_server'] | length  == 1)
 
@@ -63,6 +65,8 @@
       grafana_password: "{{grafana_admin_password}}"
       ds_type: "loki"
       ds_url: "http://{% for host in groups['loki_server'] -%}{{ host }}{% endfor %}:{{loki_port}}"
+      basic_auth_user: "admin"   # See: https://github.com/ansible-collections/community.grafana/issues/248 (LiMuBei commented on Oct 8, 2023).
+      basic_auth_password: "{{grafana_admin_password}}" # If basic auth is not set it will fail changing datasource if already available.      
       time_interval: ">10s"
     when: deploy_loki_server and (groups['loki_server'] | length  == 1)
 

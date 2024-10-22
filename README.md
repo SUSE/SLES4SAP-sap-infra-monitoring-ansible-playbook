@@ -170,15 +170,23 @@ Please change [inventory.yaml](inventory.yaml) and  [/group_vars/all/main.yaml](
 
 The ansible playbook is tested with:
 
+* openSUSE Leap 15.6
+
 * SUSE Linux Enterprise Server 15 SP4 (see Known Issues)
 * SUSE Linux Enterprise Server for SAP Applications 15 SP4 (see Known Issues)
 
 * SUSE Linux Enterprise Server 15 SP5
 * SUSE Linux Enterprise Server for SAP Applications 15 SP5 
 
-Other SLES versions and Service Pack's might work as well. The monitoring packages might be however on different non default repositories. (which has to be added before running ansible)
+It is recommended to add the **SUSE Package Hub Repository** to get all packages.
 
+````
+suseconnect -d -p PackageHub/15.<X>/x86_64
+````
 
+Other SLES versions and Service Pack's might work as well.
+Some packages might be however on different non default repositories. (which has to be added before running ansible) 
+        
 
 ## Known Issues
 

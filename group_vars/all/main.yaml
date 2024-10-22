@@ -6,14 +6,15 @@ grafana_admin_password: 'SUSE1234'
 # Prometheus
 prometheus_port: 9090
 prometheus_args:
-  - storage.tsdb.retention.time=40d 
-  - web.enable-lifecycle
-  - web.listen-address=:{{prometheus_port}}
+  - storage.tsdb.retention.time=90d                       # How long to retain samples in storage. 
+  - web.enable-lifecycle                                  # Enable shutdown and reload via HTTP request.
+  - web.listen-address=:{{prometheus_port}}               # Address to listen on for UI, API, and telemetry.
+  - enable-feature=remote-write-receiver                  # Accept remote write requests from other Prometheus servers. 
 
 # Prometheus Alertmanager 
 prometheus_alertmanager_port: 9093
 prometheus_alertmanager_args:
-  - web.listen-address=:{{prometheus_alertmanager_port}}
+  - web.listen-address=:{{prometheus_alertmanager_port}}  # Port to listen 
 
 # Node exporter
 node_exporter_port: 9100
