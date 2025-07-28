@@ -170,11 +170,11 @@ Please change [inventory.yaml](inventory.yaml) and  [/group_vars/all/main.yaml](
 
 The ansible playbook is tested with:
 
-* SUSE Linux Enterprise Server 15 SP7 (see Known Issues)
-* SUSE Linux Enterprise Server for SAP Applications 15 SP7 (see Known Issues)
+* SUSE Linux Enterprise Server 15 SP7 
+* SUSE Linux Enterprise Server for SAP Applications 15 SP7 
 
-* SUSE Linux Enterprise Server 15 SP6 (see Known Issues)
-* SUSE Linux Enterprise Server for SAP Applications 15 SP6 (see Known Issues)
+* SUSE Linux Enterprise Server 15 SP6 
+* SUSE Linux Enterprise Server for SAP Applications 15 SP6 
 
 * SUSE Linux Enterprise Server 15 SP5
 * SUSE Linux Enterprise Server for SAP Applications 15 SP5 
