@@ -15,14 +15,14 @@ route:
 
 receivers:
   - name: 'mailserver'
-      email_configs:
-      - smarthost: 'smtp.example.com:587'
-        auth_username: '<your email id here>'
-        auth_password: "<your app password here>"
-        from: '<your email id here>'
-        to: '<receiver's email id here>'
-        headers:
-          subject: 'Prometheus Mail Alerts'
+    email_configs:
+#      - smarthost: 'smtp.example.com:587'
+#        auth_username: '<your email id here>'
+#        auth_password: "<your app password here>"
+#        from: '<your email id here>'
+#        to: '<receiver's email id here>'
+#        headers:
+#          subject: 'Prometheus Mail Alerts'
 
 
 

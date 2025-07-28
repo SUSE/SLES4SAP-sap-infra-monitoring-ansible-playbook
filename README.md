@@ -43,7 +43,7 @@ Data Source (Agent component):
 * Promtail 
 * Prometheus Node Exporter
 * Collectd
-* PCM
+* PCM (only available on SLES for SAP Applications)
 
 
 ## Settings
@@ -170,13 +170,17 @@ Please change [inventory.yaml](inventory.yaml) and  [/group_vars/all/main.yaml](
 
 The ansible playbook is tested with:
 
-* openSUSE Leap 15.6
+* SUSE Linux Enterprise Server 15 SP7 (see Known Issues)
+* SUSE Linux Enterprise Server for SAP Applications 15 SP7 (see Known Issues)
 
-* SUSE Linux Enterprise Server 15 SP4 (see Known Issues)
-* SUSE Linux Enterprise Server for SAP Applications 15 SP4 (see Known Issues)
+* SUSE Linux Enterprise Server 15 SP6 (see Known Issues)
+* SUSE Linux Enterprise Server for SAP Applications 15 SP6 (see Known Issues)
 
 * SUSE Linux Enterprise Server 15 SP5
 * SUSE Linux Enterprise Server for SAP Applications 15 SP5 
+
+* SUSE Linux Enterprise Server 15 SP4 (see Known Issues)
+* SUSE Linux Enterprise Server for SAP Applications 15 SP4 (see Known Issues)
 
 It is recommended to add the **SUSE Package Hub Repository** to get all packages.
 
